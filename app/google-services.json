@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "848206295425",
+    "project_id": "every-pin",
+    "storage_bucket": "every-pin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:848206295425:android:4de0220df2982e917bf880",
+        "android_client_info": {
+          "package_name": "everypin.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBY80-mS45srMODkJfgMGUMph5MvFkFpTU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
