@@ -1,4 +1,4 @@
-package everypin.app.ui.theme
+package everypin.app.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
