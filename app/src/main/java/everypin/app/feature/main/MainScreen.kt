@@ -16,8 +16,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import everypin.app.feature.add_pin.addPinNavGraph
-import everypin.app.feature.add_pin.navigateAddPin
+import everypin.app.feature.addpin.addPinNavGraph
+import everypin.app.feature.addpin.navigateAddPin
 import everypin.app.feature.home.HomeRoute
 import everypin.app.feature.home.homeNavGraph
 import everypin.app.feature.home.navigateHome

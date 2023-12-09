@@ -3,7 +3,7 @@ package everypin.app.feature.main
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import everypin.app.R
-import everypin.app.feature.add_pin.AddPinRoute
+import everypin.app.feature.addpin.AddPinRoute
 import everypin.app.feature.home.HomeRoute
 import everypin.app.feature.my.MyRoute
 

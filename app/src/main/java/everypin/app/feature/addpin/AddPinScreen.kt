@@ -1,4 +1,4 @@
-package everypin.app.feature.add_pin
+package everypin.app.feature.addpin
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

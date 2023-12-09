@@ -1,4 +1,4 @@
-package everypin.app.feature.add_pin
+package everypin.app.feature.addpin
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
