@@ -1,5 +1,7 @@
 package everypin.app.feature.signin
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -12,7 +14,13 @@ fun NavController.navigateSignIn(navOptions: NavOptions) {
 fun NavGraphBuilder.signInNavGraph(
     onNavigateToHome: () -> Unit
 ) {
-    composable(route = SignInRoute.route) {
+    composable(
+        route = SignInRoute.route,
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+        popEnterTransition = { EnterTransition.None },
+        popExitTransition = { ExitTransition.None }
+    ) {
         SignInRoute(
             onClickSignIn = {
                 onNavigateToHome()

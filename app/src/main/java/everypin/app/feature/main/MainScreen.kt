@@ -7,16 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.core.splashscreen.SplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -34,33 +29,31 @@ import everypin.app.feature.my.navigateMy
 import everypin.app.feature.signin.SignInRoute
 import everypin.app.feature.signin.navigateSignIn
 import everypin.app.feature.signin.signInNavGraph
-import kotlinx.coroutines.delay
 
 @Composable
 internal fun MainScreen(
     navController: NavHostController = rememberNavController(),
-    mainViewModel: MainViewModel = viewModel(),
-    splashScreen: SplashScreen
+    mainViewModel: MainViewModel
 ) {
     val authState by mainViewModel.authState.collectAsStateWithLifecycle()
-    var shouldShowSplash by remember { mutableStateOf(true) }
 
-    SideEffect {
-        splashScreen.setKeepOnScreenCondition {
-            shouldShowSplash
+    DisposableEffect(authState) {
+        val listener = NavController.OnDestinationChangedListener { _, _, _ ->
+            if(authState != AuthState.LOADING) mainViewModel.hideSplashScreen()
         }
-    }
+        navController.addOnDestinationChangedListener(listener)
 
-    LaunchedEffect(authState) {
         if (authState == AuthState.NOT_AUTHENTICATED) {
             navController.navigateSignIn(navOptions {
                 popUpTo(navController.graph.findStartDestination().id) {
                     inclusive = true
                 }
             })
-            delay(1000L)
         }
-        shouldShowSplash = authState == AuthState.LOADING
+
+        onDispose {
+            navController.removeOnDestinationChangedListener(listener)
+        }
     }
 
     Scaffold(
