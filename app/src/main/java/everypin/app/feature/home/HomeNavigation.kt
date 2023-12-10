@@ -1,5 +1,7 @@
 package everypin.app.feature.home
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -13,7 +15,13 @@ fun NavController.navigateHome(navOptions: NavOptions) {
 fun NavGraphBuilder.homeNavGraph(
     padding: PaddingValues
 ) {
-    composable(route = HomeRoute.route) {
+    composable(
+        route = HomeRoute.route,
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+        popEnterTransition = { EnterTransition.None },
+        popExitTransition = { ExitTransition.None }
+    ) {
         HomeRoute(
             padding = padding,
         )
