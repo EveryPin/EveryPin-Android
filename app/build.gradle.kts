@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -23,6 +25,10 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        manifestPlaceholders["kakaoNativeAppKey"] = getLocalPropertyValue("kakao.native.app.key")
+
+        buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"${getLocalPropertyValue("kakao.native.app.key")}\"")
     }
 
     buildTypes {
@@ -43,6 +49,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.6"
@@ -52,6 +59,10 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+}
+
+fun getLocalPropertyValue(key: String): String {
+    return gradleLocalProperties(rootDir).getProperty(key)
 }
 
 dependencies {
@@ -95,4 +106,6 @@ dependencies {
     implementation(libs.moshi.kotlinCodegen)
 
     implementation(libs.coil.compose)
+
+    implementation(libs.kakao.user)
 }

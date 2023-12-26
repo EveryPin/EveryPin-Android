@@ -21,10 +21,8 @@ fun NavGraphBuilder.signInNavGraph(
         popEnterTransition = { EnterTransition.None },
         popExitTransition = { ExitTransition.None }
     ) {
-        SignInRoute(
-            onClickSignIn = {
-                onNavigateToHome()
-            }
+        SignInScreen(
+            onNavigateToHome = onNavigateToHome
         )
     }
 }
