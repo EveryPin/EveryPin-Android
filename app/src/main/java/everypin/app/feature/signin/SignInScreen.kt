@@ -1,9 +1,12 @@
 package everypin.app.feature.signin
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -17,10 +20,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import everypin.app.core.constant.ProviderType
 import everypin.app.core.helper.rememberSocialSignInHelper
+import everypin.app.core.ui.component.signin.GoogleSignInButton
+import everypin.app.core.ui.component.signin.KakaoSignInButton
 import everypin.app.core.ui.state.SignInState
 import everypin.app.core.ui.theme.LoadingBackgroundColor
 
@@ -61,15 +67,26 @@ private fun SignInContainer(
                 .fillMaxSize()
         ) {
             Column(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(start = 20.dp, end = 20.dp, bottom = 40.dp),
             ) {
-                Button(
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+
+                }
+                GoogleSignInButton(
+                    onClick = {
+                        onClickSignIn(ProviderType.GOOGLE)
+                    }
+                )
+                Spacer(modifier = Modifier.height(6.dp))
+                KakaoSignInButton(
                     onClick = {
                         onClickSignIn(ProviderType.KAKAO)
                     }
-                ) {
-                    Text(text = "카카오 로그인")
-                }
+                )
             }
             if (signInState == SignInState.Loading) {
                 Box(
