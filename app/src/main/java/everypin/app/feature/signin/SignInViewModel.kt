@@ -27,7 +27,7 @@ class SignInViewModel @Inject constructor(): ViewModel() {
 
         viewModelScope.launch {
             socialSignIn.catch {
-                Logger.w(it.message.toString())
+                Logger.e(it.message.toString(), it)
                 _signInState.value = SignInState.Error(it)
             }.collectLatest { result ->
                 result.onSuccess { idToken ->
@@ -38,7 +38,7 @@ class SignInViewModel @Inject constructor(): ViewModel() {
                         SignInState.Error(Throwable("사용자 정보를 불러올 수 없습니다."))
                     }
                 }.onFailure {
-                    Logger.w(it.message.toString())
+                    Logger.e(it.message.toString(), it)
                     _signInState.value = SignInState.Error(it)
                 }
             }

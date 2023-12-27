@@ -108,4 +108,8 @@ dependencies {
     implementation(libs.coil.compose)
 
     implementation(libs.kakao.user)
+
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.playServicesAuth)
+    implementation(libs.googleId)
 }

@@ -4,6 +4,14 @@ import android.app.Activity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetPasswordOption
+import androidx.credentials.GetPublicKeyCredentialOption
+import androidx.credentials.PasswordCredential
+import androidx.credentials.PublicKeyCredential
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
@@ -15,6 +23,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flow
 
 class SocialSignInHelper(
     private val activity: Activity
@@ -22,9 +31,7 @@ class SocialSignInHelper(
 
     fun signIn(providerType: ProviderType): Flow<Result<String?>> {
         return when (providerType) {
-            ProviderType.GOOGLE -> {
-                emptyFlow()
-            }
+            ProviderType.GOOGLE -> googleSignIn()
             ProviderType.KAKAO -> kakaoSignIn()
         }
     }
@@ -75,6 +82,34 @@ class SocialSignInHelper(
         }
 
         awaitClose()
+    }
+
+    private fun googleSignIn() = flow<Result<String?>> {
+        val credentialManager = CredentialManager.create(activity)
+        val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
+            .setFilterByAuthorizedAccounts(true)
+            .setServerClientId("SERVER_CLIENT_ID")
+            .build()
+        val getCredRequest = GetCredentialRequest(listOf(googleIdOption))
+        val result = credentialManager.getCredential(
+            context = activity,
+            request = getCredRequest
+        )
+        when (val credential = result.credential) {
+            is PublicKeyCredential -> {
+                val responseJson = credential.authenticationResponseJson
+                // Share responseJson i.e. a GetCredentialResponse on your server to
+                // validate and  authenticate
+                Logger.d(responseJson)
+            }
+
+            else -> {
+                // Catch any unrecognized credential type here.
+                Logger.e("Unexpected type of credential")
+            }
+        }
+
+        emit(Result.failure(Throwable("테스트")))
     }
 }
 
