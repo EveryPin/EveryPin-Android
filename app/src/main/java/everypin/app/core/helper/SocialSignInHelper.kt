@@ -7,22 +7,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
-import androidx.credentials.GetPasswordOption
-import androidx.credentials.GetPublicKeyCredentialOption
-import androidx.credentials.PasswordCredential
-import androidx.credentials.PublicKeyCredential
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import everypin.app.BuildConfig
 import everypin.app.core.constant.ProviderType
 import everypin.app.core.extension.findActivity
 import everypin.app.core.utils.Logger
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 
 class SocialSignInHelper(
@@ -88,28 +86,31 @@ class SocialSignInHelper(
         val credentialManager = CredentialManager.create(activity)
         val googleIdOption: GetGoogleIdOption = GetGoogleIdOption.Builder()
             .setFilterByAuthorizedAccounts(true)
-            .setServerClientId("SERVER_CLIENT_ID")
+            .setServerClientId(BuildConfig.GOOGLE_SIGN_IN_SERVER_CLIENT_ID)
             .build()
         val getCredRequest = GetCredentialRequest(listOf(googleIdOption))
-        val result = credentialManager.getCredential(
+        val credentialResp = credentialManager.getCredential(
             context = activity,
             request = getCredRequest
         )
-        when (val credential = result.credential) {
-            is PublicKeyCredential -> {
-                val responseJson = credential.authenticationResponseJson
-                // Share responseJson i.e. a GetCredentialResponse on your server to
-                // validate and  authenticate
-                Logger.d(responseJson)
-            }
+        val credential = credentialResp.credential as? CustomCredential
 
-            else -> {
-                // Catch any unrecognized credential type here.
-                Logger.e("Unexpected type of credential")
+        val result = credential?.let {
+            if (it.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                try {
+                    val googleIdTokenCredential = GoogleIdTokenCredential
+                        .createFrom(it.data)
+                    Result.success(googleIdTokenCredential.idToken)
+                } catch (e: GoogleIdTokenParsingException) {
+                    Logger.e("Received an invalid google id token response", e)
+                    Result.failure(e)
+                }
+            } else {
+                Result.failure(Throwable("Unexpected type of credential"))
             }
-        }
+        } ?: Result.failure(Throwable("Unexpected type of credential"))
 
-        emit(Result.failure(Throwable("테스트")))
+        emit(result)
     }
 }
 
