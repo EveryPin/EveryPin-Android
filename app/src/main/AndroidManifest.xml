@@ -16,6 +16,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EveryPin"
         tools:targetApi="tiramisu">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${googleMapApiKey}"/>
+
         <activity
             android:name=".feature.main.MainActivity"
             android:exported="true"

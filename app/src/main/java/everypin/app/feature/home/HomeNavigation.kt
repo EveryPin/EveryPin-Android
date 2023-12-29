@@ -22,7 +22,7 @@ fun NavGraphBuilder.homeNavGraph(
         popEnterTransition = { EnterTransition.None },
         popExitTransition = { ExitTransition.None }
     ) {
-        HomeRoute(
+        HomeScreen(
             padding = padding,
         )
     }

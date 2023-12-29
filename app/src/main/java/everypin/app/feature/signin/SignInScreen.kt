@@ -1,7 +1,6 @@
 package everypin.app.feature.signin
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -51,14 +50,16 @@ internal fun SignInScreen(
                 socialSignIn = socialSignInHelper.signIn(it),
                 providerType = it
             )
-        }
+        },
+        onNavigateToHome = onNavigateToHome
     )
 }
 
 @Composable
 private fun SignInContainer(
     signInState: SignInState,
-    onClickSignIn: (ProviderType) -> Unit
+    onClickSignIn: (ProviderType) -> Unit,
+    onNavigateToHome: () -> Unit
 ) {
     Scaffold { padding ->
         Box(
@@ -74,7 +75,9 @@ private fun SignInContainer(
                 Column(
                     modifier = Modifier.weight(1f)
                 ) {
-
+                    Button(onClick = onNavigateToHome) {
+                        Text(text = "홈으로 이동")
+                    }
                 }
                 GoogleSignInButton(
                     onClick = {
@@ -109,7 +112,8 @@ private fun SignInScreenPreview() {
     MaterialTheme {
         SignInContainer(
             signInState = SignInState.Init,
-            onClickSignIn = {}
+            onClickSignIn = {},
+            onNavigateToHome = {}
         )
     }
 }

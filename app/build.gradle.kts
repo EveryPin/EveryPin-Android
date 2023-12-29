@@ -27,6 +27,7 @@ android {
         }
 
         manifestPlaceholders["kakaoNativeAppKey"] = getLocalPropertyValue("kakao.native.app.key")
+        manifestPlaceholders["googleMapApiKey"] = getLocalPropertyValue("google.map.api.key")
 
         buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"${getLocalPropertyValue("kakao.native.app.key")}\"")
         buildConfigField("String", "GOOGLE_SIGN_IN_SERVER_CLIENT_ID", "\"${getLocalPropertyValue("google.sign.in.server.client.id")}\"")
@@ -113,4 +114,6 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.playServicesAuth)
     implementation(libs.googleId)
+
+    implementation(libs.mapsCompose)
 }
