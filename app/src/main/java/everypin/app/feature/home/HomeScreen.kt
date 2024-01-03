@@ -102,12 +102,7 @@ internal fun HomeScreen(
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
-        if (locationPermissions.none {
-                ContextCompat.checkSelfPermission(
-                    context,
-                    it
-                ) != PackageManager.PERMISSION_GRANTED
-            }) {
+        if (isLocationPermissionGranted) {
             fusedLocationClient.lastLocation.addOnSuccessListener {
                 coroutineScope.launch {
                     cameraPositionState.move(
@@ -124,18 +119,35 @@ internal fun HomeScreen(
         snackBarHostState = snackBarHostState,
         cameraPositionState = cameraPositionState,
         onClickLocationButton = {
+            isLocationPermissionGranted = locationPermissions.any {
+                ContextCompat.checkSelfPermission(
+                    context,
+                    it
+                ) == PackageManager.PERMISSION_GRANTED
+            }
+
             when {
-                locationPermissions.none {
-                    ContextCompat.checkSelfPermission(
-                        context,
-                        it
-                    ) != PackageManager.PERMISSION_GRANTED
-                } -> {
-                    isLocationPermissionGranted = true
+                isLocationPermissionGranted -> {
                     fusedLocationClient.lastLocation.addOnSuccessListener {
                         coroutineScope.launch {
                             cameraPositionState.animate(
                                 CameraUpdateFactory.newLatLng(LatLng(it.latitude, it.longitude))
+                            )
+                        }
+                    }
+
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(
+                            context.findActivity(),
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        )
+                    ) {
+                        coroutineScope.launch {
+                            snackBarHostState.showSnackBarForPermissionSetting(
+                                context,
+                                ContextCompat.getString(
+                                    context,
+                                    R.string.fine_location_permission_guide
+                                )
                             )
                         }
                     }
@@ -149,29 +161,6 @@ internal fun HomeScreen(
                             context,
                             ContextCompat.getString(context, R.string.location_permission_guide)
                         )
-                    }
-                }
-
-                ActivityCompat.shouldShowRequestPermissionRationale(
-                    context.findActivity(), Manifest.permission.ACCESS_FINE_LOCATION
-                ) -> {
-                    coroutineScope.launch {
-                        snackBarHostState.showSnackBarForPermissionSetting(
-                            context,
-                            ContextCompat.getString(
-                                context,
-                                R.string.fine_location_permission_guide
-                            )
-                        )
-                    }
-
-                    isLocationPermissionGranted = true
-                    fusedLocationClient.lastLocation.addOnSuccessListener {
-                        coroutineScope.launch {
-                            cameraPositionState.animate(
-                                CameraUpdateFactory.newLatLng(LatLng(it.latitude, it.longitude))
-                            )
-                        }
                     }
                 }
 

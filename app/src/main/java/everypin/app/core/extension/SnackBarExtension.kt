@@ -17,7 +17,7 @@ suspend fun SnackbarHostState.showSnackBarForPermissionSetting(
     val result = showSnackbar(
         message = message,
         actionLabel = ContextCompat.getString(context, R.string.setting),
-        withDismissAction = false,
+        withDismissAction = true,
         duration = SnackbarDuration.Short
     )
 
