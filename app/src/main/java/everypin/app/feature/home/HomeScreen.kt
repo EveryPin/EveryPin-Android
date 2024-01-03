@@ -1,7 +1,7 @@
 package everypin.app.feature.home
 
 import android.Manifest
-import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -45,9 +46,8 @@ import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.rememberCameraPositionState
 import everypin.app.R
+import everypin.app.core.extension.findActivity
 import everypin.app.core.extension.showSnackBarForPermissionSetting
-import everypin.app.core.utils.checkMultiplePermissionGranted
-import everypin.app.core.utils.requestMultiplePermission
 import kotlinx.coroutines.launch
 
 @Composable
@@ -64,17 +64,31 @@ internal fun HomeScreen(
     val snackBarHostState = remember { SnackbarHostState() }
     var isLocationPermissionGranted by remember {
         mutableStateOf(
-            checkMultiplePermissionGranted(context, locationPermissions)
+            locationPermissions.any {
+                ContextCompat.checkSelfPermission(
+                    context,
+                    it
+                ) == PackageManager.PERMISSION_GRANTED
+            }
         )
     }
     val locationPermissionLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissionMap ->
-            val isGranted = permissionMap.values.none { !it }
-            if (!isGranted) {
+            if (permissionMap[Manifest.permission.ACCESS_COARSE_LOCATION] != true) {
                 coroutineScope.launch {
                     snackBarHostState.showSnackBarForPermissionSetting(
                         context,
                         ContextCompat.getString(context, R.string.location_permission_guide)
+                    )
+                }
+                return@rememberLauncherForActivityResult
+            }
+
+            if (permissionMap[Manifest.permission.ACCESS_FINE_LOCATION] != true) {
+                coroutineScope.launch {
+                    snackBarHostState.showSnackBarForPermissionSetting(
+                        context,
+                        ContextCompat.getString(context, R.string.fine_location_permission_guide)
                     )
                 }
                 return@rememberLauncherForActivityResult
@@ -88,8 +102,12 @@ internal fun HomeScreen(
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
-        @SuppressLint("MissingPermission")
-        if (checkMultiplePermissionGranted(context, locationPermissions)) {
+        if (locationPermissions.none {
+                ContextCompat.checkSelfPermission(
+                    context,
+                    it
+                ) != PackageManager.PERMISSION_GRANTED
+            }) {
             fusedLocationClient.lastLocation.addOnSuccessListener {
                 coroutineScope.launch {
                     cameraPositionState.move(
@@ -106,11 +124,13 @@ internal fun HomeScreen(
         snackBarHostState = snackBarHostState,
         cameraPositionState = cameraPositionState,
         onClickLocationButton = {
-            requestMultiplePermission(
-                context = context,
-                permissions = locationPermissions,
-                launcher = locationPermissionLauncher,
-                onGranted = @SuppressLint("MissingPermission") {
+            when {
+                locationPermissions.none {
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        it
+                    ) != PackageManager.PERMISSION_GRANTED
+                } -> {
                     isLocationPermissionGranted = true
                     fusedLocationClient.lastLocation.addOnSuccessListener {
                         coroutineScope.launch {
@@ -119,8 +139,11 @@ internal fun HomeScreen(
                             )
                         }
                     }
-                },
-                onShowRequestPermissionRationale = {
+                }
+
+                ActivityCompat.shouldShowRequestPermissionRationale(
+                    context.findActivity(), Manifest.permission.ACCESS_COARSE_LOCATION
+                ) -> {
                     coroutineScope.launch {
                         snackBarHostState.showSnackBarForPermissionSetting(
                             context,
@@ -128,7 +151,34 @@ internal fun HomeScreen(
                         )
                     }
                 }
-            )
+
+                ActivityCompat.shouldShowRequestPermissionRationale(
+                    context.findActivity(), Manifest.permission.ACCESS_FINE_LOCATION
+                ) -> {
+                    coroutineScope.launch {
+                        snackBarHostState.showSnackBarForPermissionSetting(
+                            context,
+                            ContextCompat.getString(
+                                context,
+                                R.string.fine_location_permission_guide
+                            )
+                        )
+                    }
+
+                    isLocationPermissionGranted = true
+                    fusedLocationClient.lastLocation.addOnSuccessListener {
+                        coroutineScope.launch {
+                            cameraPositionState.animate(
+                                CameraUpdateFactory.newLatLng(LatLng(it.latitude, it.longitude))
+                            )
+                        }
+                    }
+                }
+
+                else -> {
+                    locationPermissionLauncher.launch(locationPermissions)
+                }
+            }
         }
     )
 }
