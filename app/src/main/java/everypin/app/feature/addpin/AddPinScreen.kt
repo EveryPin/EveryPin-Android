@@ -18,18 +18,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import everypin.app.R
 
 @Composable
-internal fun AddPinRoute(
-    onPop: () -> Unit
+internal fun AddPinScreen(
+    onBack: () -> Unit
 ) {
-    AddPinScreen(
-        onPop = onPop
+    AddPinContainer(
+        onBack = onBack
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AddPinScreen(
-    onPop: () -> Unit
+private fun AddPinContainer(
+    onBack: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -41,7 +41,7 @@ private fun AddPinScreen(
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = onPop
+                        onClick = onBack
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_close),
@@ -70,8 +70,8 @@ private fun AddPinScreen(
 @Composable
 private fun AddPinScreenPreview() {
     MaterialTheme {
-        AddPinScreen(
-            onPop = {}
+        AddPinContainer(
+            onBack = {}
         )
     }
 }

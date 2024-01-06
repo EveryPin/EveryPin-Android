@@ -13,7 +13,7 @@ fun NavController.navigateMy(navOptions: NavOptions) {
 }
 
 fun NavGraphBuilder.myNavGraph(
-    padding: PaddingValues
+    innerPadding: PaddingValues
 ) {
     composable(
         route = MyRoute.route,
@@ -23,7 +23,7 @@ fun NavGraphBuilder.myNavGraph(
         popExitTransition = { ExitTransition.None }
     ) {
         MyRoute(
-            padding = padding,
+            innerPadding = innerPadding,
         )
     }
 }

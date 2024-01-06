@@ -20,11 +20,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hierarchy
 
 @Composable
 fun MainNavBar(
     visible: Boolean,
-    selectedTab: MainTab?,
+    currentDestination: NavDestination?,
     onClickTab: (MainTab) -> Unit
 ) {
     AnimatedVisibility(
@@ -34,22 +36,23 @@ fun MainNavBar(
     ) {
         NavigationBar {
             MainTab.entries.forEach { tab ->
+                val selected = currentDestination?.hierarchy?.any { it.route == tab.route } == true
                 NavigationBarItem(
-                    selected = selectedTab == tab,
+                    selected = selected,
                     onClick = {
                         onClickTab(tab)
                     },
                     icon = {
                         Icon(
                             painter = painterResource(
-                                id = if (selectedTab == tab) {
+                                id = if (selected) {
                                     tab.selectedIconResId
                                 } else {
                                     tab.unselectedIconResId
                                 }
                             ),
                             contentDescription = tab.name,
-                            tint = if (selectedTab == tab) {
+                            tint = if (selected) {
                                 MaterialTheme.colorScheme.onSurface
                             } else {
                                 MaterialTheme.colorScheme.onSurfaceVariant
@@ -59,12 +62,12 @@ fun MainNavBar(
                     label = {
                         Text(
                             text = stringResource(id = tab.labelResId),
-                            color = if (selectedTab == tab) {
+                            color = if (selected) {
                                 MaterialTheme.colorScheme.onSurface
                             } else {
                                 MaterialTheme.colorScheme.onSurfaceVariant
                             },
-                            fontWeight = if (selectedTab == tab) {
+                            fontWeight = if (selected) {
                                 FontWeight.SemiBold
                             } else {
                                 FontWeight.Medium
@@ -85,7 +88,7 @@ private fun MainNavBarPreview() {
     MaterialTheme {
         MainNavBar(
             visible = selectedTab != MainTab.ADD_PIN,
-            selectedTab = selectedTab,
+            currentDestination = null,
             onClickTab = { tab ->
                 selectedTab = tab
             }

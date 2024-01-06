@@ -10,9 +10,9 @@ import androidx.compose.ui.Modifier
 
 @Composable
 internal fun MyRoute(
-    padding: PaddingValues
+    innerPadding: PaddingValues
 ) {
-    MyScreen(padding = padding)
+    MyScreen(padding = innerPadding)
 }
 
 @Composable

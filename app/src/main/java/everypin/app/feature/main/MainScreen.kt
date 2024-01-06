@@ -1,6 +1,5 @@
 package everypin.app.feature.main
 
-import androidx.annotation.IdRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -24,6 +22,7 @@ import everypin.app.feature.addpin.navigateAddPin
 import everypin.app.feature.home.HomeRoute
 import everypin.app.feature.home.homeNavGraph
 import everypin.app.feature.home.navigateHome
+import everypin.app.feature.home.navigateNotification
 import everypin.app.feature.my.myNavGraph
 import everypin.app.feature.my.navigateMy
 import everypin.app.feature.signin.SignInRoute
@@ -39,7 +38,7 @@ internal fun MainScreen(
 
     DisposableEffect(authState) {
         val listener = NavController.OnDestinationChangedListener { _, _, _ ->
-            if(authState != AuthState.LOADING) mainViewModel.hideSplashScreen()
+            if (authState != AuthState.LOADING) mainViewModel.hideSplashScreen()
         }
         navController.addOnDestinationChangedListener(listener)
 
@@ -59,24 +58,16 @@ internal fun MainScreen(
     Scaffold(
         bottomBar = {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentDestination = navBackStackEntry?.destination
 
             MainNavBar(
-                visible = shouldShowBottomNavigationBar(currentDestination?.route),
-                selectedTab = MainTab.entries.firstOrNull { tab ->
-                    currentDestination?.hierarchy?.find { it.route == tab.route } != null
-                },
-                onClickTab = { tab ->
-                    val startDestinationId = navController.graph.findStartDestination().id
-                    when (tab) {
-                        MainTab.HOME -> navController.navigateHome(mainNavOptions(startDestinationId))
-                        MainTab.ADD_PIN -> navController.navigateAddPin()
-                        MainTab.MY -> navController.navigateMy(mainNavOptions(startDestinationId))
-                    }
+                visible = shouldShowBottomNavigationBar(navBackStackEntry?.destination?.route),
+                currentDestination = navBackStackEntry?.destination,
+                onClickTab = {
+                    onClickMainNavTab(navController, it, navBackStackEntry?.destination?.route)
                 }
             )
         }
-    ) { padding ->
+    ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -92,37 +83,68 @@ internal fun MainScreen(
                             popUpTo(SignInRoute.route) {
                                 inclusive = true
                             }
+                            launchSingleTop = true
                         })
                     }
                 )
                 homeNavGraph(
-                    padding = padding
+                    innerPadding = innerPadding,
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    onNavigateToNotification = {
+                        navController.navigateNotification()
+                    },
+                    onNavigateToChat = {
+
+                    }
                 )
                 addPinNavGraph(
-                    onPop = {
+                    onBack = {
                         navController.popBackStack()
                     }
                 )
                 myNavGraph(
-                    padding = padding
+                    innerPadding = innerPadding
                 )
             }
         }
     }
 }
 
-private fun mainNavOptions(
-    @IdRes startDestinationId: Int
-) = navOptions {
-    popUpTo(startDestinationId) {
-        saveState = true
-    }
-    launchSingleTop = true
-    restoreState = true
-}
-
 private fun shouldShowBottomNavigationBar(route: String?): Boolean {
     if (MainTab.ADD_PIN.route == route) return false
 
-    return MainTab.entries.find { it.route == route } != null
+    return MainTab.entries.any { route?.startsWith(it.route) == true }
+}
+
+private fun onClickMainNavTab(
+    navController: NavHostController,
+    tab: MainTab,
+    currentRoute: String?
+) {
+    val startDestinationId = navController.graph.findStartDestination().id
+
+    when (tab) {
+        MainTab.HOME -> {
+            if (currentRoute == HomeRoute.map()) return
+
+            navController.navigateHome(navOptions {
+                popUpTo(startDestinationId) {
+                    saveState = true
+                }
+                restoreState = currentRoute?.startsWith(tab.route) != true
+                launchSingleTop = true
+            })
+        }
+
+        MainTab.ADD_PIN -> navController.navigateAddPin()
+        MainTab.MY -> navController.navigateMy(navOptions {
+            popUpTo(startDestinationId) {
+                saveState = true
+            }
+            restoreState = true
+            launchSingleTop = true
+        })
+    }
 }

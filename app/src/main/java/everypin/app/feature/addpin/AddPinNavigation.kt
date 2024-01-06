@@ -9,11 +9,11 @@ fun NavController.navigateAddPin() {
 }
 
 fun NavGraphBuilder.addPinNavGraph(
-    onPop: () -> Unit
+    onBack: () -> Unit
 ) {
     composable(route = AddPinRoute.route) {
-        AddPinRoute(
-            onPop = onPop
+        AddPinScreen(
+            onBack = onBack
         )
     }
 }
