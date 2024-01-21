@@ -55,6 +55,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import everypin.app.R
 import everypin.app.core.extension.findActivity
 import everypin.app.core.extension.showSnackBarForPermissionSetting
+import everypin.app.core.ui.theme.EveryPinTheme
 import kotlinx.coroutines.launch
 
 @Composable
@@ -62,7 +63,7 @@ internal fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
     innerPadding: PaddingValues,
     onNavigateToNotification: () -> Unit,
-    onNavigateToChat: () -> Unit
+    onNavigateToChatList: () -> Unit
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -179,7 +180,7 @@ internal fun HomeScreen(
             }
         },
         onClickNotification = onNavigateToNotification,
-        onClickChat = onNavigateToChat
+        onClickChat = onNavigateToChatList
     )
 }
 
@@ -288,7 +289,7 @@ private fun HomeTopAppBar(
 @Preview(showBackground = true)
 @Composable
 private fun HomeScreenPreview() {
-    MaterialTheme {
+    EveryPinTheme {
         HomeContainer(
             innerPadding = PaddingValues(),
             isLocationPermissionGranted = true,

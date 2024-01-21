@@ -22,7 +22,7 @@ fun NavGraphBuilder.homeNavGraph(
     innerPadding: PaddingValues,
     onBack: () -> Unit,
     onNavigateToNotification: () -> Unit,
-    onNavigateToChat: () -> Unit
+    onNavigateToChatList: () -> Unit
 ) {
     navigation(
         startDestination = HomeRoute.map(),
@@ -38,7 +38,7 @@ fun NavGraphBuilder.homeNavGraph(
             HomeScreen(
                 innerPadding = innerPadding,
                 onNavigateToNotification = onNavigateToNotification,
-                onNavigateToChat = onNavigateToChat
+                onNavigateToChatList = onNavigateToChatList
             )
         }
     }

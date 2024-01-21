@@ -1,7 +1,7 @@
-package everypin.app.feature.addpin
+package everypin.app.feature.chat
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,36 +20,37 @@ import everypin.app.R
 import everypin.app.core.ui.theme.EveryPinTheme
 
 @Composable
-internal fun AddPinScreen(
-    onBack: () -> Unit
+internal fun ChatSearchScreen(
+    onBack: () -> Unit,
+    onNavigateToChatRoom: () -> Unit
 ) {
-    AddPinContainer(
-        onBack = onBack
+    BackHandler(onBack = onBack)
+
+    ChatSearchContainer(
+        onBack = onBack,
+        onNavigateToChatRoom = onNavigateToChatRoom
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AddPinContainer(
-    onBack: () -> Unit
+private fun ChatSearchContainer(
+    onBack: () -> Unit,
+    onNavigateToChatRoom: () -> Unit
 ) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = stringResource(id = R.string.new_post)
+                        text = stringResource(id = R.string.chat_search)
                     )
                 },
                 navigationIcon = {
-                    IconButton(
-                        onClick = onBack
-                    ) {
+                    IconButton(onClick = onBack) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_close),
-                            contentDescription = stringResource(
-                                id = R.string.close
-                            )
+                            painter = painterResource(id = R.drawable.ic_arrow_back),
+                            contentDescription = stringResource(id = R.string.back)
                         )
                     }
                 },
@@ -58,25 +59,18 @@ private fun AddPinContainer(
                 )
             )
         }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-        ) {
-            Text(
-                text = "핀 추가"
-            )
-        }
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding))
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun AddPinScreenPreview() {
+private fun ChatSearchScreenPreview() {
     EveryPinTheme {
-        AddPinContainer(
-            onBack = {}
+        ChatSearchContainer(
+            onBack = {},
+            onNavigateToChatRoom = {}
         )
     }
 }

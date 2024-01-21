@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +26,7 @@ import everypin.app.core.helper.rememberSocialSignInHelper
 import everypin.app.core.ui.component.signin.GoogleSignInButton
 import everypin.app.core.ui.component.signin.KakaoSignInButton
 import everypin.app.core.ui.state.SignInState
+import everypin.app.core.ui.theme.EveryPinTheme
 import everypin.app.core.ui.theme.LoadingBackgroundColor
 
 @Composable
@@ -109,7 +109,7 @@ private fun SignInContainer(
 @Preview(showBackground = true)
 @Composable
 private fun SignInScreenPreview() {
-    MaterialTheme {
+    EveryPinTheme {
         SignInContainer(
             signInState = SignInState.Init,
             onClickSignIn = {},

@@ -34,9 +34,9 @@ object Logger {
 
         with(sb) {
             append("[")
-            append(ste.fileName.replace(".kt", ""))
-            append("::")
-            append(ste.methodName)
+            append(ste.fileName)
+            append(":")
+            append(ste.lineNumber)
             append("]")
             append(" ")
             append(message)

@@ -19,6 +19,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import everypin.app.feature.addpin.addPinNavGraph
 import everypin.app.feature.addpin.navigateAddPin
+import everypin.app.feature.chat.chatNavGraph
+import everypin.app.feature.chat.navigateChatList
+import everypin.app.feature.chat.navigateChatRoom
+import everypin.app.feature.chat.navigateChatSearch
 import everypin.app.feature.home.HomeRoute
 import everypin.app.feature.home.homeNavGraph
 import everypin.app.feature.home.navigateHome
@@ -95,8 +99,8 @@ internal fun MainScreen(
                     onNavigateToNotification = {
                         navController.navigateNotification()
                     },
-                    onNavigateToChat = {
-
+                    onNavigateToChatList = {
+                        navController.navigateChatList()
                     }
                 )
                 addPinNavGraph(
@@ -106,6 +110,17 @@ internal fun MainScreen(
                 )
                 myNavGraph(
                     innerPadding = innerPadding
+                )
+                chatNavGraph(
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    onNavigateToChatRoom = {
+                        navController.navigateChatRoom()
+                    },
+                    onNavigateToChatSearch = {
+                        navController.navigateChatSearch()
+                    }
                 )
             }
         }
