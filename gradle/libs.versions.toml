@@ -1,5 +1,5 @@
 [versions]
-android-gradle-plugin = "8.2.1"
+android-gradle-plugin = "8.2.2"
 activity-compose = "1.8.2"
 androidx-core = "1.12.0"
 androidx-core-splashScreen = "1.0.1"
@@ -9,7 +9,7 @@ androidx-hilt = "1.1.0"
 androidx-junit = "1.1.5"
 androidx-lifecycle = "2.7.0"
 androidx-navigation = "2.7.6"
-androidx-compose-bom = "2023.10.01"
+androidx-compose-bom = "2024.01.00"
 coil = "2.5.0"
 firebase-bom = "32.7.1"
 firebase-crashlytics-plugin = "2.9.9"
@@ -26,7 +26,7 @@ moshi = "1.15.0"
 okHttp = "4.12.0"
 retrofit = "2.9.0"
 kakao = "2.18.0"
-playServicesLocation = "21.0.1"
+playServicesLocation = "21.1.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
