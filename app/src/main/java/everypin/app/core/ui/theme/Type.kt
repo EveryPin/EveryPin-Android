@@ -1,7 +1,6 @@
 package everypin.app.core.ui.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -22,8 +21,7 @@ val pretendard = FontFamily(
 )
 
 private val pretendardStyle = TextStyle(
-    fontFamily = pretendard,
-    platformStyle = PlatformTextStyle(includeFontPadding = false)
+    fontFamily = pretendard
 )
 
 val Typography = Typography(

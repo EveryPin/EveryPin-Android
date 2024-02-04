@@ -1,7 +1,6 @@
-package everypin.app.feature.addpin
+package everypin.app.feature.chat.view
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,17 +17,17 @@ import com.example.compose.EveryPinTheme
 import everypin.app.R
 
 @Composable
-internal fun AddPinScreen(
+internal fun ChatRoomScreen(
     onBack: () -> Unit
 ) {
-    AddPinContainer(
+    ChatRoomContainer(
         onBack = onBack
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AddPinContainer(
+private fun ChatRoomContainer(
     onBack: () -> Unit
 ) {
     Scaffold(
@@ -36,41 +35,29 @@ private fun AddPinContainer(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = stringResource(id = R.string.new_post)
+                        text = "채팅방"
                     )
                 },
                 navigationIcon = {
-                    IconButton(
-                        onClick = onBack
-                    ) {
+                    IconButton(onClick = onBack) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_close),
-                            contentDescription = stringResource(
-                                id = R.string.close
-                            )
+                            painter = painterResource(id = R.drawable.ic_arrow_back),
+                            contentDescription = stringResource(id = R.string.back)
                         )
                     }
                 }
             )
         }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-        ) {
-            Text(
-                text = "핀 추가"
-            )
-        }
+    ) { innerPadding ->
+        Box(Modifier.padding(innerPadding))
     }
 }
 
 @PreviewScreenSizes
 @Composable
-private fun AddPinScreenPreview() {
+fun ChatRoomScreenPreview() {
     EveryPinTheme {
-        AddPinContainer(
+        ChatRoomContainer(
             onBack = {}
         )
     }

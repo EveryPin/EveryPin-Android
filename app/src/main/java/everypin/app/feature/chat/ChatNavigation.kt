@@ -4,6 +4,9 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.navigation
 import everypin.app.core.ui.animation.animateComposable
+import everypin.app.feature.chat.view.ChatListScreen
+import everypin.app.feature.chat.view.ChatRoomScreen
+import everypin.app.feature.chat.view.ChatSearchScreen
 
 fun NavController.navigateChatList() {
     navigate(ChatRoute.chatList())
@@ -46,7 +49,9 @@ fun NavGraphBuilder.chatNavGraph(
         animateComposable(
             route = ChatRoute.chatRoom()
         ) {
-            ChatRoomScreen()
+            ChatRoomScreen(
+                onBack = onBack
+            )
         }
     }
 }
