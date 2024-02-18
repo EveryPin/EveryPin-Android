@@ -8,18 +8,18 @@ androidx-espresso-core = "3.5.1"
 androidx-hilt = "1.1.0"
 androidx-junit = "1.1.5"
 androidx-lifecycle = "2.7.0"
-androidx-navigation = "2.7.6"
-androidx-compose-bom = "2024.01.00"
+androidx-navigation = "2.7.7"
+androidx-compose-bom = "2024.02.00"
 coil = "2.5.0"
-firebase-bom = "32.7.1"
+firebase-bom = "32.7.2"
 firebase-crashlytics-plugin = "2.9.9"
 firebase-perf-plugin = "1.4.2"
-gms-plugin = "4.4.0"
+gms-plugin = "4.4.1"
 googleId = "1.1.0"
 hilt-android = "2.49"
 junit = "4.13.2"
 kotlin = "1.9.22"
-kotlinCompilerExtension = "1.5.8"
+kotlinCompilerExtension = "1.5.9"
 ksp = "1.9.22-1.0.17"
 mapsCompose = "4.3.0"
 moshi = "1.15.0"
@@ -31,7 +31,7 @@ playServicesLocation = "21.1.0"
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "androidx-compose-bom" }
-androidx-compose-material3 = { module = "androidx.compose.material3:material3", version = "1.2.0-rc01" }
+androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
 androidx-compose-ui = { module = "androidx.compose.ui:ui" }
 androidx-compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 androidx-compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
