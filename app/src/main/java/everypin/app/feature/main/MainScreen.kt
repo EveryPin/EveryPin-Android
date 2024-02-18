@@ -29,6 +29,8 @@ import everypin.app.feature.home.navigateHome
 import everypin.app.feature.home.navigateNotification
 import everypin.app.feature.my.myNavGraph
 import everypin.app.feature.my.navigateMy
+import everypin.app.feature.setting.navigateSetting
+import everypin.app.feature.setting.settingNavGraph
 import everypin.app.feature.signin.SignInRoute
 import everypin.app.feature.signin.navigateSignIn
 import everypin.app.feature.signin.signInNavGraph
@@ -109,7 +111,18 @@ internal fun MainScreen(
                     }
                 )
                 myNavGraph(
-                    innerPadding = innerPadding
+                    innerPadding = innerPadding,
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    onNavigateToSetting = {
+                        navController.navigateSetting()
+                    }
+                )
+                settingNavGraph(
+                    onBack = {
+                        navController.popBackStack()
+                    }
                 )
                 chatNavGraph(
                     onBack = {

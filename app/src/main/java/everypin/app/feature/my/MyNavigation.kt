@@ -13,7 +13,9 @@ fun NavController.navigateMy(navOptions: NavOptions) {
 }
 
 fun NavGraphBuilder.myNavGraph(
-    innerPadding: PaddingValues
+    innerPadding: PaddingValues,
+    onBack: () -> Unit,
+    onNavigateToSetting: () -> Unit
 ) {
     composable(
         route = MyRoute.route,
@@ -22,8 +24,9 @@ fun NavGraphBuilder.myNavGraph(
         popEnterTransition = { EnterTransition.None },
         popExitTransition = { ExitTransition.None }
     ) {
-        MyRoute(
+        MyScreen(
             innerPadding = innerPadding,
+            onNavigateToSetting = onNavigateToSetting
         )
     }
 }
