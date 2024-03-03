@@ -112,11 +112,17 @@ internal fun HomeScreen(
 
     LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
         if (isLocationPermissionGranted) {
-            fusedLocationClient.lastLocation.addOnSuccessListener {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                val latLng = location?.let {
+                    LatLng(it.latitude, it.longitude)
+                }
+                val cameraUpdate = latLng?.let {
+                    CameraUpdateFactory.newLatLngZoom(it, 15f)
+                }
                 coroutineScope.launch {
-                    cameraPositionState.move(
-                        CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 15f)
-                    )
+                    cameraUpdate?.let {
+                        cameraPositionState.move(it)
+                    }
                 }
             }
         }
