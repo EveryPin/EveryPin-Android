@@ -16,21 +16,18 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.example.compose.EveryPinTheme
 import everypin.app.R
+import everypin.app.core.ui.component.CommonAsyncImage
 import everypin.app.core.ui.component.UserProfile
 
 @Composable
@@ -69,7 +66,7 @@ private fun MyContainer(
             title = {
                 Text(
                     text = "아이디",
-                    style = MaterialTheme.typography.titleLarge
+                    style = EveryPinTheme.typography.titleLarge
                 )
             },
             actions = {
@@ -137,12 +134,8 @@ private fun MyContainer(
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             items(30) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data("https://picsum.photos/200")
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = null,
+                CommonAsyncImage(
+                    data = "https://picsum.photos/200",
                     contentScale = ContentScale.Crop
                 )
             }

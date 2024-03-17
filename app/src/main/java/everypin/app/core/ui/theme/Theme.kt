@@ -7,9 +7,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import everypin.app.core.ui.theme.EveryPinTypography
+import everypin.app.core.ui.theme.LocalTypography
 import everypin.app.core.ui.theme.Typography
 
 
@@ -94,9 +97,18 @@ fun EveryPinTheme(
         }
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    CompositionLocalProvider(
+        LocalTypography provides Typography
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            content = content
+        )
+    }
+}
+
+object EveryPinTheme {
+    val typography: EveryPinTypography
+        @Composable
+        get() = LocalTypography.current
 }

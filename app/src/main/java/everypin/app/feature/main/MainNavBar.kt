@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
+import com.example.compose.EveryPinTheme
 
 @Composable
 fun MainNavBar(
@@ -85,7 +86,7 @@ fun MainNavBar(
 private fun MainNavBarPreview() {
     var selectedTab by remember { mutableStateOf(MainTab.HOME) }
 
-    MaterialTheme {
+    EveryPinTheme {
         MainNavBar(
             visible = selectedTab != MainTab.ADD_PIN,
             currentDestination = null,

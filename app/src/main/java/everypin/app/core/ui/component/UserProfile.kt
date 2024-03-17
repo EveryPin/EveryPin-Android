@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -19,12 +18,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import com.example.compose.EveryPinTheme
 import everypin.app.R
 
 @Composable
@@ -45,13 +42,9 @@ fun UserProfile(
         horizontalArrangement = Arrangement.spacedBy(13.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data("https://picsum.photos/200")
-                .crossfade(true)
-                .build(),
+        CommonAsyncImage(
+            data = "https://picsum.photos/200",
             placeholder = painterResource(id = R.drawable.ic_face),
-            contentDescription = null,
             modifier = Modifier
                 .size(100.dp)
                 .clip(CircleShape),
@@ -62,12 +55,12 @@ fun UserProfile(
         ) {
             Text(
                 text = nickname,
-                style = MaterialTheme.typography.titleSmall
+                style = EveryPinTheme.typography.titleSmall
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = intro,
-                style = MaterialTheme.typography.bodyMedium,
+                style = EveryPinTheme.typography.bodyMedium,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
@@ -86,11 +79,11 @@ fun UserProfile(
                         } else {
                             formatter.format(pinCnt)
                         },
-                        style = MaterialTheme.typography.titleMedium
+                        style = EveryPinTheme.typography.titleMedium
                     )
                     Text(
                         text = "게시 핀",
-                        style = MaterialTheme.typography.bodySmall
+                        style = EveryPinTheme.typography.bodySmall
                     )
                 }
                 Column(
@@ -110,11 +103,11 @@ fun UserProfile(
                         } else {
                             formatter.format(followerCnt)
                         },
-                        style = MaterialTheme.typography.titleMedium
+                        style = EveryPinTheme.typography.titleMedium
                     )
                     Text(
                         text = "팔로워",
-                        style = MaterialTheme.typography.bodySmall
+                        style = EveryPinTheme.typography.bodySmall
                     )
                 }
                 Column(
@@ -134,11 +127,11 @@ fun UserProfile(
                         } else {
                             formatter.format(followCnt)
                         },
-                        style = MaterialTheme.typography.titleMedium
+                        style = EveryPinTheme.typography.titleMedium
                     )
                     Text(
                         text = "팔로우",
-                        style = MaterialTheme.typography.bodySmall
+                        style = EveryPinTheme.typography.bodySmall
                     )
                 }
             }

@@ -30,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -39,11 +38,10 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.example.compose.EveryPinTheme
 import everypin.app.R
 import everypin.app.core.model.ChatListModel
+import everypin.app.core.ui.component.CommonAsyncImage
 import everypin.app.core.ui.preview.provider.ChatListPreviewParameterProvider
 import everypin.app.core.ui.state.UIState
 import everypin.app.feature.chat.viewmodel.ChatListViewModel
@@ -161,13 +159,9 @@ private fun ChatListItem(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(chatListModel.profileImgUrl)
-                .crossfade(true)
-                .build(),
+        CommonAsyncImage(
+            data = chatListModel.profileImgUrl,
             placeholder = painterResource(id = R.drawable.ic_face),
-            contentDescription = null,
             modifier = Modifier
                 .size(60.dp)
                 .clip(CircleShape),
@@ -183,18 +177,18 @@ private fun ChatListItem(
             ) {
                 Text(
                     text = chatListModel.name,
-                    style = MaterialTheme.typography.titleMedium
+                    style = EveryPinTheme.typography.titleMedium
                 )
                 Text(
                     text = chatListModel.lastChatDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                    style = MaterialTheme.typography.titleSmall
+                    style = EveryPinTheme.typography.titleSmall
                 )
             }
             Text(
                 text = chatListModel.content,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 2,
-                style = MaterialTheme.typography.bodyMedium
+                style = EveryPinTheme.typography.bodyMedium
             )
         }
     }

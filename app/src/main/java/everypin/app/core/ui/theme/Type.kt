@@ -1,6 +1,7 @@
 package everypin.app.core.ui.theme
 
-import androidx.compose.material3.Typography
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -24,7 +25,7 @@ private val pretendardStyle = TextStyle(
     fontFamily = pretendard
 )
 
-val Typography = Typography(
+val Typography = EveryPinTypography(
     displayLarge = pretendardStyle.copy(
         fontWeight = FontWeight.Normal,
         fontSize = 57.sp,
@@ -116,3 +117,42 @@ val Typography = Typography(
         letterSpacing = 0.5.sp,
     )
 )
+
+@Immutable
+data class EveryPinTypography(
+    val displayLarge: TextStyle,
+    val displayMedium: TextStyle,
+    val displaySmall: TextStyle,
+    val headlineLarge: TextStyle,
+    val headlineMedium: TextStyle,
+    val headlineSmall: TextStyle,
+    val titleLarge: TextStyle,
+    val titleMedium: TextStyle,
+    val titleSmall: TextStyle,
+    val bodyLarge: TextStyle,
+    val bodyMedium: TextStyle,
+    val bodySmall: TextStyle,
+    val labelLarge: TextStyle,
+    val labelMedium: TextStyle,
+    val labelSmall: TextStyle,
+)
+
+val LocalTypography = staticCompositionLocalOf {
+    EveryPinTypography(
+        displayLarge = pretendardStyle,
+        displayMedium = pretendardStyle,
+        displaySmall = pretendardStyle,
+        headlineLarge = pretendardStyle,
+        headlineMedium = pretendardStyle,
+        headlineSmall = pretendardStyle,
+        titleLarge = pretendardStyle,
+        titleMedium = pretendardStyle,
+        titleSmall = pretendardStyle,
+        bodyLarge = pretendardStyle,
+        bodyMedium = pretendardStyle,
+        bodySmall = pretendardStyle,
+        labelLarge = pretendardStyle,
+        labelMedium = pretendardStyle,
+        labelSmall = pretendardStyle,
+    )
+}
