@@ -21,4 +21,10 @@
     <string name="terms">이용약관</string>
     <string name="privacy_policy">개인정보처리방침</string>
     <string name="delete_account">계정 삭제</string>
+    <string name="reg_pin">핀 등록</string>
+    <string name="hint_content">내용을 작성하세요.</string>
+    <string name="photo_and_video">사진 및 동영상</string>
+    <string name="camera">카메라</string>
+    <string name="take_picture">사진 촬영</string>
+    <string name="select_complete">선택 완료</string>
 </resources>

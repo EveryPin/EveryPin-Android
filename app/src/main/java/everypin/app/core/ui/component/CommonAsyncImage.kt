@@ -12,15 +12,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
-import coil.request.CachePolicy
 import coil.request.ImageRequest
-import kotlinx.coroutines.Dispatchers
 
 @Composable
 fun CommonAsyncImage(
     data: Any?,
     modifier: Modifier = Modifier,
-    key: String? = null,
     contentDescription: String? = null,
     crossFade: Boolean = true,
     placeholder: Painter? = null,
@@ -39,11 +36,6 @@ fun CommonAsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
             .data(data)
             .crossfade(crossFade)
-            .dispatcher(Dispatchers.IO)
-            .memoryCachePolicy(CachePolicy.ENABLED)
-            .memoryCacheKey(key)
-            .diskCachePolicy(CachePolicy.ENABLED)
-            .diskCacheKey(key)
             .build(),
         placeholder = placeholder,
         contentDescription = contentDescription,

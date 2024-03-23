@@ -25,8 +25,8 @@ import com.example.compose.EveryPinTheme
 import com.example.compose.LoadingBackgroundColor
 import everypin.app.core.constant.ProviderType
 import everypin.app.core.helper.rememberSocialSignInHelper
-import everypin.app.core.ui.component.signin.GoogleSignInButton
-import everypin.app.core.ui.component.signin.KakaoSignInButton
+import everypin.app.core.ui.component.button.GoogleSignInButton
+import everypin.app.core.ui.component.button.KakaoSignInButton
 import everypin.app.core.ui.state.SignInState
 
 @Composable

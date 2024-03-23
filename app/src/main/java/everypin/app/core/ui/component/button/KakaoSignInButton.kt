@@ -1,4 +1,4 @@
-package everypin.app.core.ui.component.signin
+package everypin.app.core.ui.component.button
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

@@ -1,4 +1,4 @@
-package everypin.app.core.ui.component
+package everypin.app.core.ui.component.button
 
 import androidx.compose.foundation.Indication
 import androidx.compose.foundation.clickable

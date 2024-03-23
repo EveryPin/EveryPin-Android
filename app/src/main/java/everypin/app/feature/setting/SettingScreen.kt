@@ -20,7 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import com.example.compose.EveryPinTheme
 import everypin.app.R
-import everypin.app.core.ui.component.ListItemButton
+import everypin.app.core.ui.component.button.ListItemButton
 
 @Composable
 internal fun SettingScreen(
