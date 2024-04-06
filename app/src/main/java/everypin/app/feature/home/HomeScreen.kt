@@ -272,7 +272,6 @@ private fun HomeTopAppBar(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_notifications),
                     contentDescription = stringResource(id = R.string.notification),
-                    tint = Color.Black
                 )
             }
             IconButton(
@@ -281,7 +280,6 @@ private fun HomeTopAppBar(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_chat),
                     contentDescription = stringResource(id = R.string.chat),
-                    tint = Color.Black
                 )
             }
         }
