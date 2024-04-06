@@ -14,8 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import com.example.compose.EveryPinTheme
 import everypin.app.R
+import everypin.app.core.ui.theme.EveryPinTheme
 
 @Composable
 internal fun ChatSearchScreen(

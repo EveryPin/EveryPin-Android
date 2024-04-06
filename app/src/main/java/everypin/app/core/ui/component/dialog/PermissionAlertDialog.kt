@@ -9,7 +9,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.buildAnnotatedString
-import com.example.compose.EveryPinTheme
+import everypin.app.core.ui.theme.EveryPinTheme
 
 /**
  * @param onDismiss 다이얼로그 닫기 동작

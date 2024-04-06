@@ -20,7 +20,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,12 +37,12 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.compose.EveryPinTheme
 import everypin.app.R
 import everypin.app.core.model.ChatListModel
 import everypin.app.core.ui.component.CommonAsyncImage
 import everypin.app.core.ui.preview.provider.ChatListPreviewParameterProvider
 import everypin.app.core.ui.state.UIState
+import everypin.app.core.ui.theme.EveryPinTheme
 import everypin.app.feature.chat.viewmodel.ChatListViewModel
 import java.time.format.DateTimeFormatter
 

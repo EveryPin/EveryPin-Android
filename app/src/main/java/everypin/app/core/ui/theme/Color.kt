@@ -1,4 +1,4 @@
-package com.example.compose
+package everypin.app.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
@@ -63,7 +63,6 @@ val md_theme_dark_shadow = Color(0xFF000000)
 val md_theme_dark_surfaceTint = Color(0xFFADC6FF)
 val md_theme_dark_outlineVariant = Color(0xFF44474F)
 val md_theme_dark_scrim = Color(0xFF000000)
-
 
 val seed = Color(0xFFADC6FF)
 

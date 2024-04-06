@@ -21,13 +21,13 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.compose.EveryPinTheme
-import com.example.compose.LoadingBackgroundColor
 import everypin.app.core.constant.ProviderType
 import everypin.app.core.helper.rememberSocialSignInHelper
 import everypin.app.core.ui.component.button.GoogleSignInButton
 import everypin.app.core.ui.component.button.KakaoSignInButton
 import everypin.app.core.ui.state.SignInState
+import everypin.app.core.ui.theme.EveryPinTheme
+import everypin.app.core.ui.theme.LoadingBackgroundColor
 
 @Composable
 internal fun SignInScreen(

@@ -42,7 +42,6 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
-import com.example.compose.EveryPinTheme
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -55,6 +54,7 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import everypin.app.R
 import everypin.app.core.extension.findActivity
 import everypin.app.core.extension.showSnackBarForPermissionSetting
+import everypin.app.core.ui.theme.EveryPinTheme
 import kotlinx.coroutines.launch
 
 @Composable

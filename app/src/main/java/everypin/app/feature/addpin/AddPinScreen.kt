@@ -54,11 +54,11 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.compose.EveryPinTheme
 import everypin.app.R
 import everypin.app.core.ui.component.CommonAsyncImage
 import everypin.app.core.ui.component.bottomsheet.ImagePickerModalBottomSheet
 import everypin.app.core.ui.component.dialog.PermissionAlertDialog
+import everypin.app.core.ui.theme.EveryPinTheme
 import everypin.app.core.ui.theme.NoRippleTheme
 import everypin.app.core.utils.FileUtil
 import kotlinx.coroutines.launch

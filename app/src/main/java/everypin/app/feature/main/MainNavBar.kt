@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
-import com.example.compose.EveryPinTheme
+import everypin.app.core.ui.theme.EveryPinTheme
 
 @Composable
 fun MainNavBar(

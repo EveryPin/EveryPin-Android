@@ -25,10 +25,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
-import com.example.compose.EveryPinTheme
 import everypin.app.R
 import everypin.app.core.ui.component.CommonAsyncImage
 import everypin.app.core.ui.component.UserProfile
+import everypin.app.core.ui.theme.EveryPinTheme
 
 @Composable
 internal fun MyScreen(

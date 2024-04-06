@@ -1,20 +1,11 @@
-package com.example.compose
+package everypin.app.core.ui.theme
 
-import android.app.Activity
-import android.graphics.Color
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.SideEffect
-import androidx.compose.ui.platform.LocalView
-import androidx.core.view.WindowCompat
-import everypin.app.core.ui.theme.EveryPinTypography
-import everypin.app.core.ui.theme.LocalTypography
-import everypin.app.core.ui.theme.Typography
-
 
 private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,
@@ -47,7 +38,6 @@ private val LightColors = lightColorScheme(
     outlineVariant = md_theme_light_outlineVariant,
     scrim = md_theme_light_scrim,
 )
-
 
 private val DarkColors = darkColorScheme(
     primary = md_theme_dark_primary,
@@ -87,15 +77,6 @@ fun EveryPinTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) DarkColors else LightColors
-
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = Color.TRANSPARENT
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
-        }
-    }
 
     CompositionLocalProvider(
         LocalTypography provides Typography

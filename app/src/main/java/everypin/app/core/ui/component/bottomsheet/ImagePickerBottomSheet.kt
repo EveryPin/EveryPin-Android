@@ -36,10 +36,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.IntentCompat
 import androidx.core.net.toUri
-import com.example.compose.EveryPinTheme
 import everypin.app.R
 import everypin.app.core.extension.getExternalStorageImageList
 import everypin.app.core.ui.component.CheckImageItem
+import everypin.app.core.ui.theme.EveryPinTheme
 import everypin.app.core.utils.FileUtil
 import everypin.app.core.utils.Logger
 import java.io.File
