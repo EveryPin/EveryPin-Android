@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
+import androidx.compose.ui.tooling.preview.Preview
 import everypin.app.R
 import everypin.app.core.ui.theme.EveryPinTheme
 
@@ -59,7 +59,7 @@ private fun ChatSearchContainer(
     }
 }
 
-@PreviewScreenSizes
+@Preview(showBackground = true)
 @Composable
 private fun ChatSearchScreenPreview() {
     EveryPinTheme {

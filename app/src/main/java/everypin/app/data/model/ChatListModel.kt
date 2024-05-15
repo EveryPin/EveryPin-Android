@@ -1,4 +1,4 @@
-package everypin.app.core.model
+package everypin.app.data.model
 
 import java.time.LocalDateTime
 

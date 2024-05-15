@@ -31,6 +31,11 @@ android {
 
         buildConfigField(
             "String",
+            "BASE_URL",
+            "\"https://everypin-api.azurewebsites.net\""
+        )
+        buildConfigField(
+            "String",
             "KAKAO_NATIVE_APP_KEY",
             "\"${getLocalPropertyValue("kakao.native.app.key")}\""
         )
@@ -62,7 +67,7 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.11"
+        kotlinCompilerExtensionVersion = "1.5.13"
     }
     packaging {
         resources {
@@ -125,4 +130,6 @@ dependencies {
     implementation(libs.googleId)
 
     implementation(libs.mapsCompose)
+
+    implementation(libs.androidx.datastore.preferences)
 }

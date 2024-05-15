@@ -7,9 +7,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import dagger.hilt.android.AndroidEntryPoint
+import everypin.app.core.ui.navigation.GlobalNavigation
+import everypin.app.core.ui.navigation.GlobalNavigationHandler
 import everypin.app.core.ui.theme.EveryPinTheme
 
 

@@ -1,7 +1,7 @@
 [versions]
-android-gradle-plugin = "8.3.2"
+android-gradle-plugin = "8.4.0"
 activity-compose = "1.9.0"
-androidx-core = "1.13.0"
+androidx-core = "1.13.1"
 androidx-core-splashScreen = "1.0.1"
 androidx-credentials = "1.2.2"
 androidx-espresso-core = "3.5.1"
@@ -9,10 +9,11 @@ androidx-hilt = "1.2.0"
 androidx-junit = "1.1.5"
 androidx-lifecycle = "2.7.0"
 androidx-navigation = "2.7.7"
-androidx-compose-bom = "2024.04.01"
+androidx-compose-bom = "2024.05.00"
 coil = "2.5.0"
-firebase-bom = "32.8.1"
-firebase-crashlytics-plugin = "2.9.9"
+datastore = "1.1.1"
+firebase-bom = "33.0.0"
+firebase-crashlytics-plugin = "3.0.1"
 firebase-perf-plugin = "1.4.2"
 gms-plugin = "4.4.1"
 googleId = "1.1.0"
@@ -23,9 +24,9 @@ ksp = "1.9.23-1.0.20"
 mapsCompose = "4.3.0"
 moshi = "1.15.1"
 okHttp = "4.12.0"
+playServicesLocation = "21.2.0"
 retrofit = "2.11.0"
 kakao = "2.19.0"
-playServicesLocation = "21.2.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
@@ -41,6 +42,7 @@ androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-cor
 androidx-core-splashScreen = { module = "androidx.core:core-splashscreen", version.ref = "androidx-core-splashScreen" }
 androidx-credentials = { module = "androidx.credentials:credentials", version.ref = "androidx-credentials" }
 androidx-credentials-playServicesAuth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "androidx-credentials" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "androidx-espresso-core" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "androidx-hilt" }
 androidx-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-junit" }

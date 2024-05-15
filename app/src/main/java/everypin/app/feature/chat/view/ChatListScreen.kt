@@ -32,13 +32,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import everypin.app.R
-import everypin.app.core.model.ChatListModel
+import everypin.app.data.model.ChatListModel
 import everypin.app.core.ui.component.CommonAsyncImage
 import everypin.app.core.ui.preview.provider.ChatListPreviewParameterProvider
 import everypin.app.core.ui.state.UIState
@@ -193,7 +193,7 @@ private fun ChatListItem(
     }
 }
 
-@PreviewScreenSizes
+@Preview(showBackground = true)
 @Composable
 private fun ChatListScreenPreview(
     @PreviewParameter(ChatListPreviewParameterProvider::class) chatList: List<ChatListModel>

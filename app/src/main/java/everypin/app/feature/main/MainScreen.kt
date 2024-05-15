@@ -17,6 +17,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import everypin.app.core.ui.navigation.GlobalNavigation
+import everypin.app.core.ui.navigation.GlobalNavigationHandler
 import everypin.app.feature.addpin.addPinNavGraph
 import everypin.app.feature.addpin.navigateAddPin
 import everypin.app.feature.chat.chatNavGraph
@@ -42,6 +44,23 @@ internal fun MainScreen(
 ) {
     val authState by mainViewModel.authState.collectAsStateWithLifecycle()
 
+    DisposableEffect(key1 = Unit) {
+        val handler = object : GlobalNavigationHandler {
+            override fun onNavigateToSignIn() {
+                navController.navigateSignIn(navOptions {
+                    popUpTo(SignInRoute.route) {
+                        inclusive = true
+                    }
+                })
+            }
+        }
+        GlobalNavigation.setHandler(handler)
+
+        onDispose {
+            GlobalNavigation.removeHandler()
+        }
+    }
+
     DisposableEffect(authState) {
         val listener = NavController.OnDestinationChangedListener { _, _, _ ->
             if (authState != AuthState.LOADING) mainViewModel.hideSplashScreen()
@@ -50,7 +69,7 @@ internal fun MainScreen(
 
         if (authState == AuthState.NOT_AUTHENTICATED) {
             navController.navigateSignIn(navOptions {
-                popUpTo(navController.graph.findStartDestination().id) {
+                popUpTo(SignInRoute.route) {
                     inclusive = true
                 }
             })
