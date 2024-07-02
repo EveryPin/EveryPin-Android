@@ -9,6 +9,7 @@ import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialCancellationException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.kakao.sdk.auth.model.OAuthToken
@@ -85,11 +86,11 @@ class SocialSignInHelper(
     private fun googleSignIn(): Flow<String?> = flow {
         try {
             val credentialManager = CredentialManager.create(context)
-            val googleIdOption = GetGoogleIdOption.Builder().apply {
-                setFilterByAuthorizedAccounts(false)
-                setServerClientId(BuildConfig.GOOGLE_SIGN_IN_SERVER_CLIENT_ID)
-            }.build()
-            val getCredRequest = GetCredentialRequest(listOf(googleIdOption))
+            val signInWithGoogleOption =
+                GetSignInWithGoogleOption.Builder(BuildConfig.GOOGLE_SIGN_IN_SERVER_CLIENT_ID).build()
+            val getCredRequest = GetCredentialRequest.Builder()
+                .addCredentialOption(signInWithGoogleOption)
+                .build()
             val result = credentialManager.getCredential(
                 context = context,
                 request = getCredRequest
