@@ -1,4 +1,5 @@
 import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+import kotlin.math.sign
 
 plugins {
     alias(libs.plugins.android.application)
@@ -42,9 +43,23 @@ android {
         )
         buildConfigField(
             "String",
+            "KAKAO_REST_API_KEY",
+            "\"${getLocalPropertyValue("kakao.rest.api.key")}\""
+        )
+        buildConfigField(
+            "String",
             "GOOGLE_SIGN_IN_SERVER_CLIENT_ID",
             "\"${getLocalPropertyValue("google.sign.in.server.client.id")}\""
         )
+    }
+
+    signingConfigs {
+        create("releaseSigningConfig") {
+            storeFile = signingConfigs.getByName("debug").storeFile
+            keyAlias = signingConfigs.getByName("debug").keyAlias
+            keyPassword = signingConfigs.getByName("debug").keyPassword
+            storePassword = signingConfigs.getByName("debug").storePassword
+        }
     }
 
     buildTypes {
@@ -54,6 +69,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("releaseSigningConfig")
         }
     }
     compileOptions {
@@ -134,4 +150,7 @@ dependencies {
     implementation(libs.mapsCompose)
 
     implementation(libs.androidx.datastore.preferences)
+
+    implementation(libs.androidx.paging.runtimeKtx)
+    implementation(libs.androidx.paging.compose)
 }

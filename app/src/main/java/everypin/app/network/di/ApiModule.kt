@@ -5,6 +5,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import everypin.app.network.api.AuthenticationApi
+import everypin.app.network.api.KakaoApi
+import everypin.app.network.api.PostApi
 import everypin.app.network.api.TokenApi
 import retrofit2.Retrofit
 
@@ -19,4 +21,12 @@ object ApiModule {
     @Provides
     fun provideTokenApi(@RetrofitModule.DefaultRetrofit retrofit: Retrofit): TokenApi =
         retrofit.create(TokenApi::class.java)
+
+    @Provides
+    fun providePostApi(@RetrofitModule.AuthRetrofit retrofit: Retrofit): PostApi =
+        retrofit.create(PostApi::class.java)
+
+    @Provides
+    fun provideKakaoApi(@RetrofitModule.KakaoRetrofit retrofit: Retrofit): KakaoApi =
+        retrofit.create(KakaoApi::class.java)
 }

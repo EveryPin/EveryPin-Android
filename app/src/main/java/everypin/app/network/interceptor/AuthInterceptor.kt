@@ -6,6 +6,7 @@ import everypin.app.datastore.DataStorePreferences
 import everypin.app.datastore.PreferencesKey
 import everypin.app.network.api.TokenApi
 import everypin.app.network.dto.auth.TokenRefreshRequest
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
@@ -32,7 +33,7 @@ class AuthInterceptor @Inject constructor(
         }
         val response = chain.proceed(authenticatedRequest.build())
         if (response.code == 401) {
-            return runBlocking {
+            return runBlocking(Dispatchers.IO) {
                 val refreshToken = prefs.getString(PreferencesKey.REFRESH_TOKEN).first()
                 val requestBody = TokenRefreshRequest(accessToken, refreshToken)
                 val tokenRefreshResponse = tokenApi.refresh(requestBody)

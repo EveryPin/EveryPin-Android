@@ -24,6 +24,10 @@ object RetrofitModule {
     @Retention(AnnotationRetention.BINARY)
     annotation class AuthRetrofit
 
+    @Qualifier
+    @Retention(AnnotationRetention.BINARY)
+    annotation class KakaoRetrofit
+
     @Provides
     fun provideMoshiConverterFactory(): MoshiConverterFactory =
         MoshiConverterFactory.create(Moshi.Builder().apply {
@@ -48,6 +52,17 @@ object RetrofitModule {
         @OkHttpClientModule.AuthOkHttpClient okHttpClient: OkHttpClient
     ): Retrofit = Retrofit.Builder().apply {
         baseUrl(BuildConfig.BASE_URL)
+        addConverterFactory(moshiConverterFactory)
+        client(okHttpClient)
+    }.build()
+
+    @Provides
+    @KakaoRetrofit
+    fun provideKakaoRetrofit(
+        moshiConverterFactory: MoshiConverterFactory,
+        @OkHttpClientModule.KakaoOkHttpClient okHttpClient: OkHttpClient
+    ): Retrofit = Retrofit.Builder().apply {
+        baseUrl("https://dapi.kakao.com")
         addConverterFactory(moshiConverterFactory)
         client(okHttpClient)
     }.build()

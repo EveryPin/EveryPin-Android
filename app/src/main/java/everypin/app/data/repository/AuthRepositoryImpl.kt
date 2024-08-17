@@ -18,7 +18,10 @@ class AuthRepositoryImpl @Inject constructor(
 ) : AuthRepository {
     override fun login(providerType: ProviderType, token: String): Flow<Unit> = flow {
         val resp = authenticationApi.login(
-            platformCode = providerType.name,
+            platformCode = when(providerType) {
+                ProviderType.GOOGLE -> "GOOGLE"
+                ProviderType.KAKAO -> "KAKAO"
+            },
             accessToken = token
         )
         val data = resp.body()
