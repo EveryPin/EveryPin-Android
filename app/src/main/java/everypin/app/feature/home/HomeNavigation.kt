@@ -9,9 +9,10 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import everypin.app.core.ui.animation.animateComposable
+import everypin.app.feature.chat.navigateChatList
 
 fun NavController.navigateHome(navOptions: NavOptions) {
-    navigate(HomeRoute.route, navOptions)
+    navigate(HomeRoute.ROUTE, navOptions)
 }
 
 fun NavController.navigateNotification() {
@@ -20,13 +21,11 @@ fun NavController.navigateNotification() {
 
 fun NavGraphBuilder.homeNavGraph(
     innerPadding: PaddingValues,
-    onBack: () -> Unit,
-    onNavigateToNotification: () -> Unit,
-    onNavigateToChatList: () -> Unit
+    navController: NavController
 ) {
     navigation(
         startDestination = HomeRoute.map(),
-        route = HomeRoute.route
+        route = HomeRoute.ROUTE
     ) {
         composable(
             route = HomeRoute.map(),
@@ -37,8 +36,12 @@ fun NavGraphBuilder.homeNavGraph(
         ) {
             HomeScreen(
                 innerPadding = innerPadding,
-                onNavigateToNotification = onNavigateToNotification,
-                onNavigateToChatList = onNavigateToChatList
+                onNavigateToNotification = {
+                    navController.navigateNotification()
+                },
+                onNavigateToChatList = {
+                    navController.navigateChatList()
+                }
             )
         }
     }
@@ -47,14 +50,16 @@ fun NavGraphBuilder.homeNavGraph(
     ) {
         NotificationScreen(
             innerPadding = innerPadding,
-            onBack = onBack
+            onBack = {
+                navController.popBackStack()
+            }
         )
     }
 }
 
 object HomeRoute {
-    const val route = "home"
+    const val ROUTE = "home"
 
-    fun map() = "$route/map"
-    fun notification() = "$route/notification"
+    fun map() = "$ROUTE/map"
+    fun notification() = "$ROUTE/notification"
 }

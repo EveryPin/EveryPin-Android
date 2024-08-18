@@ -23,6 +23,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,8 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -49,11 +49,14 @@ import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapProperties
 import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import everypin.app.R
 import everypin.app.core.extension.findActivity
 import everypin.app.core.extension.showSnackBarForPermissionSetting
 import everypin.app.core.ui.theme.EveryPinTheme
+import everypin.app.data.model.PostModel
 import kotlinx.coroutines.launch
 
 @Composable
@@ -64,7 +67,7 @@ internal fun HomeScreen(
     onNavigateToChatList: () -> Unit
 ) {
     val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
+    val scope = rememberCoroutineScope()
     val locationPermissions = arrayOf(
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.ACCESS_COARSE_LOCATION
@@ -83,7 +86,7 @@ internal fun HomeScreen(
     val locationPermissionLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissionMap ->
             if (permissionMap[Manifest.permission.ACCESS_COARSE_LOCATION] != true) {
-                coroutineScope.launch {
+                scope.launch {
                     snackBarHostState.showSnackBarForPermissionSetting(
                         context,
                         ContextCompat.getString(context, R.string.location_permission_guide)
@@ -93,7 +96,7 @@ internal fun HomeScreen(
             }
 
             if (permissionMap[Manifest.permission.ACCESS_FINE_LOCATION] != true) {
-                coroutineScope.launch {
+                scope.launch {
                     snackBarHostState.showSnackBarForPermissionSetting(
                         context,
                         ContextCompat.getString(context, R.string.fine_location_permission_guide)
@@ -107,9 +110,12 @@ internal fun HomeScreen(
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(LatLng(37.5668, 126.9783), 15f)
     }
-    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+    val fusedLocationClient = remember {
+        LocationServices.getFusedLocationProviderClient(context)
+    }
+    val postListState by homeViewModel.postListState.collectAsStateWithLifecycle()
 
-    LifecycleEventEffect(Lifecycle.Event.ON_CREATE) {
+    LaunchedEffect(key1 = Unit) {
         if (isLocationPermissionGranted) {
             fusedLocationClient.lastLocation.addOnSuccessListener { location ->
                 val latLng = location?.let {
@@ -118,7 +124,7 @@ internal fun HomeScreen(
                 val cameraUpdate = latLng?.let {
                     CameraUpdateFactory.newLatLngZoom(it, 15f)
                 }
-                coroutineScope.launch {
+                scope.launch {
                     cameraUpdate?.let {
                         cameraPositionState.move(it)
                     }
@@ -127,10 +133,17 @@ internal fun HomeScreen(
         }
     }
 
+    LaunchedEffect(key1 = cameraPositionState.position) {
+        if (!cameraPositionState.isMoving) {
+            homeViewModel.fetchPostList()
+        }
+    }
+
     HomeContainer(
         innerPadding = innerPadding,
         isLocationPermissionGranted = isLocationPermissionGranted,
         snackBarHostState = snackBarHostState,
+        postListState = postListState,
         cameraPositionState = cameraPositionState,
         onClickLocationButton = {
             isLocationPermissionGranted = locationPermissions.any {
@@ -143,7 +156,7 @@ internal fun HomeScreen(
             when {
                 isLocationPermissionGranted -> {
                     fusedLocationClient.lastLocation.addOnSuccessListener {
-                        coroutineScope.launch {
+                        scope.launch {
                             cameraPositionState.animate(
                                 CameraUpdateFactory.newLatLng(LatLng(it.latitude, it.longitude))
                             )
@@ -155,7 +168,7 @@ internal fun HomeScreen(
                             Manifest.permission.ACCESS_FINE_LOCATION
                         )
                     ) {
-                        coroutineScope.launch {
+                        scope.launch {
                             snackBarHostState.showSnackBarForPermissionSetting(
                                 context,
                                 ContextCompat.getString(
@@ -170,7 +183,7 @@ internal fun HomeScreen(
                 ActivityCompat.shouldShowRequestPermissionRationale(
                     context.findActivity(), Manifest.permission.ACCESS_COARSE_LOCATION
                 ) -> {
-                    coroutineScope.launch {
+                    scope.launch {
                         snackBarHostState.showSnackBarForPermissionSetting(
                             context,
                             ContextCompat.getString(context, R.string.location_permission_guide)
@@ -193,6 +206,7 @@ private fun HomeContainer(
     innerPadding: PaddingValues,
     isLocationPermissionGranted: Boolean,
     snackBarHostState: SnackbarHostState,
+    postListState: List<PostModel>,
     cameraPositionState: CameraPositionState,
     onClickLocationButton: () -> Unit,
     onClickNotification: () -> Unit,
@@ -222,7 +236,13 @@ private fun HomeContainer(
                     zoomControlsEnabled = false
                 )
             ) {
-
+                postListState.forEach { post ->
+                    Marker(
+                        state = MarkerState(LatLng(post.latitude, post.longitude)),
+                        title = post.content,
+                        snippet = post.createdDate.toString()
+                    )
+                }
             }
         }
         Box(
@@ -293,6 +313,7 @@ private fun HomeScreenPreview() {
             innerPadding = PaddingValues(),
             isLocationPermissionGranted = true,
             snackBarHostState = SnackbarHostState(),
+            postListState = emptyList(),
             cameraPositionState = rememberCameraPositionState(),
             onClickLocationButton = {},
             onClickNotification = {},

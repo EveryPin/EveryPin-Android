@@ -3,7 +3,7 @@ package everypin.app.data.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import everypin.app.data.model.KakaoSearchKeywordResult
+import everypin.app.data.model.PlaceInfo
 import everypin.app.data.pagingsource.KakaoSearchKeywordPagingSource
 import everypin.app.network.api.KakaoApi
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +14,7 @@ class KakaoRepositoryImpl @Inject constructor(
 ) : KakaoRepository {
     override fun searchKeywordResultPagingData(
         address: String
-    ): Flow<PagingData<KakaoSearchKeywordResult>> {
+    ): Flow<PagingData<PlaceInfo>> {
         return Pager(
             config = PagingConfig(
                 pageSize = 15,

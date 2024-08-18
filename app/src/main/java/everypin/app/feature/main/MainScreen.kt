@@ -8,6 +8,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -22,13 +23,11 @@ import everypin.app.core.ui.navigation.GlobalNavigationHandler
 import everypin.app.feature.addpin.addPinNavGraph
 import everypin.app.feature.addpin.navigateAddPin
 import everypin.app.feature.chat.chatNavGraph
-import everypin.app.feature.chat.navigateChatList
 import everypin.app.feature.chat.navigateChatRoom
 import everypin.app.feature.chat.navigateChatSearch
 import everypin.app.feature.home.HomeRoute
 import everypin.app.feature.home.homeNavGraph
 import everypin.app.feature.home.navigateHome
-import everypin.app.feature.home.navigateNotification
 import everypin.app.feature.my.myNavGraph
 import everypin.app.feature.my.navigateMy
 import everypin.app.feature.setting.navigateSetting
@@ -36,6 +35,8 @@ import everypin.app.feature.setting.settingNavGraph
 import everypin.app.feature.signin.SignInRoute
 import everypin.app.feature.signin.navigateSignIn
 import everypin.app.feature.signin.signInNavGraph
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun MainScreen(
@@ -43,15 +44,18 @@ internal fun MainScreen(
     mainViewModel: MainViewModel
 ) {
     val authState by mainViewModel.authState.collectAsStateWithLifecycle()
+    val scope = rememberCoroutineScope()
 
     DisposableEffect(key1 = Unit) {
         val handler = object : GlobalNavigationHandler {
             override fun onNavigateToSignIn() {
-                navController.navigateSignIn(navOptions {
-                    popUpTo(SignInRoute.route) {
-                        inclusive = true
-                    }
-                })
+                scope.launch(Dispatchers.Main) {
+                    navController.navigateSignIn(navOptions {
+                        popUpTo(SignInRoute.route) {
+                            inclusive = true
+                        }
+                    })
+                }
             }
         }
         GlobalNavigation.setHandler(handler)
@@ -100,7 +104,7 @@ internal fun MainScreen(
         ) {
             NavHost(
                 navController = navController,
-                startDestination = HomeRoute.route
+                startDestination = HomeRoute.ROUTE
             ) {
                 signInNavGraph(
                     onNavigateToHome = {
@@ -114,21 +118,9 @@ internal fun MainScreen(
                 )
                 homeNavGraph(
                     innerPadding = innerPadding,
-                    onBack = {
-                        navController.popBackStack()
-                    },
-                    onNavigateToNotification = {
-                        navController.navigateNotification()
-                    },
-                    onNavigateToChatList = {
-                        navController.navigateChatList()
-                    }
+                    navController = navController
                 )
-                addPinNavGraph(
-                    onBack = {
-                        navController.popBackStack()
-                    }
-                )
+                addPinNavGraph()
                 myNavGraph(
                     innerPadding = innerPadding,
                     onBack = {

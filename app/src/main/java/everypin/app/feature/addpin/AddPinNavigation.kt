@@ -8,13 +8,9 @@ fun NavController.navigateAddPin() {
     navigate(AddPinRoute.route)
 }
 
-fun NavGraphBuilder.addPinNavGraph(
-    onBack: () -> Unit
-) {
+fun NavGraphBuilder.addPinNavGraph() {
     composable(route = AddPinRoute.route) {
-        AddPinScreen(
-            onBack = onBack
-        )
+        AddPinScreen()
     }
 }
 

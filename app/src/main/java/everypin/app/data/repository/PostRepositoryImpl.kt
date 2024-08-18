@@ -1,7 +1,8 @@
 package everypin.app.data.repository
 
-import android.net.Uri
+import android.content.Context
 import androidx.core.net.toFile
+import dagger.hilt.android.qualifiers.ApplicationContext
 import everypin.app.data.model.PostModel
 import everypin.app.network.api.PostApi
 import kotlinx.coroutines.Dispatchers
@@ -13,12 +14,14 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
+import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class PostRepositoryImpl @Inject constructor(
-    private val postApi: PostApi
+    private val postApi: PostApi,
+    @ApplicationContext private val context: Context
 ) : PostRepository {
     override fun getPostList(): Flow<List<PostModel>> = flow {
         val resp = postApi.getPostList()
@@ -45,14 +48,14 @@ class PostRepositoryImpl @Inject constructor(
         content: String,
         lat: Double,
         lng: Double,
-        imageUris: List<Uri>
+        imagePaths: List<String>
     ): Flow<Unit> = flow {
         val resp = postApi.writePost(
             postContent = content.toRequestBody("text/plain".toMediaTypeOrNull()),
             x = lng.toString().toRequestBody("text/plain".toMediaTypeOrNull()),
             y = lat.toString().toRequestBody("text/plain".toMediaTypeOrNull()),
-            files = imageUris.map {
-                val file = it.toFile()
+            files = imagePaths.map {
+                val file = File(it)
                 val reqBody = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
                 MultipartBody.Part.createFormData("PhotoFiles", file.name, reqBody)
             }

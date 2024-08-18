@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">EveryPin</string>
+    <string name="default_dialog_title">안내</string>
     <string name="cancel">취소</string>
     <string name="ok">확인</string>
     <string name="back">뒤로가기</string>
@@ -29,5 +30,19 @@
     <string name="photo_and_video">사진 및 동영상</string>
     <string name="camera">카메라</string>
     <string name="take_picture">사진 촬영</string>
+    <string name="select_image">사진 선택</string>
     <string name="select_complete">선택 완료</string>
+    <string name="reg_pin_error_message">핀 등록 중 문제가 발생하였습니다.\n잠시 후 다시 시도해주세요.</string>
+    <string name="check_pin_error_message">핀 위치를 확인해주세요.</string>
+    <string name="add_image_message">이미지를 등록해주세요.</string>
+    <string name="write_content_message">내용을 입력해주세요.</string>
+    <string name="reg_pin_success_title">핀 등록 성공</string>
+    <string name="reg_pin_success_message">핀이 등록되었습니다.</string>
+    <string name="search_address">주소 검색</string>
+    <string name="search_place">장소 검색</string>
+    <string name="pin_location_for_address">핀 위치: %1$s</string>
+    <string name="search">검색</string>
+    <string name="find_current_location">현재 위치로 찾기</string>
+    <string name="search_error">검색 중 문제가 발생하였습니다.</string>
+    <string name="empty_search_result">검색 결과가 없습니다.</string>
 </resources>

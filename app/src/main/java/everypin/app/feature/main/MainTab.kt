@@ -17,7 +17,7 @@ enum class MainTab(
         labelResId = R.string.home,
         selectedIconResId = R.drawable.ic_home_selected,
         unselectedIconResId = R.drawable.ic_home_unselected,
-        route = HomeRoute.route
+        route = HomeRoute.ROUTE
     ),
     ADD_PIN(
         labelResId = R.string.add_pin,
