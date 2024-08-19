@@ -23,8 +23,8 @@
         tools:targetApi="tiramisu">
 
         <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="${googleMapApiKey}" />
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="${naverMapClientId}" />
 
         <provider
             android:name=".core.provider.EveryPinFileProvider"

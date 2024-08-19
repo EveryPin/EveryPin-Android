@@ -29,7 +29,7 @@ android {
         }
 
         manifestPlaceholders["kakaoNativeAppKey"] = getLocalPropertyValue("kakao.native.app.key")
-        manifestPlaceholders["googleMapApiKey"] = getLocalPropertyValue("google.map.api.key")
+        manifestPlaceholders["naverMapClientId"] = getLocalPropertyValue("naver.map.client.id")
 
         buildConfigField(
             "String",
@@ -99,6 +99,7 @@ fun getLocalPropertyValue(key: String): String {
 }
 
 dependencies {
+    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core)
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.activity.compose)
@@ -147,10 +148,10 @@ dependencies {
     implementation(libs.androidx.credentials.playServicesAuth)
     implementation(libs.googleId)
 
-    implementation(libs.mapsCompose)
-
     implementation(libs.androidx.datastore.preferences)
 
     implementation(libs.androidx.paging.runtimeKtx)
     implementation(libs.androidx.paging.compose)
+
+    implementation(libs.naver.map.compose)
 }

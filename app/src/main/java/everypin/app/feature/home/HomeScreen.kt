@@ -2,6 +2,7 @@ package everypin.app.feature.home
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -42,23 +43,25 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.compose.CameraPositionState
-import com.google.maps.android.compose.GoogleMap
-import com.google.maps.android.compose.MapProperties
-import com.google.maps.android.compose.MapUiSettings
-import com.google.maps.android.compose.Marker
-import com.google.maps.android.compose.MarkerState
-import com.google.maps.android.compose.rememberCameraPositionState
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraAnimation
+import com.naver.maps.map.CameraUpdate
+import com.naver.maps.map.NaverMap.OnCameraIdleListener
+import com.naver.maps.map.compose.DisposableMapEffect
+import com.naver.maps.map.compose.ExperimentalNaverMapApi
+import com.naver.maps.map.compose.LocationOverlay
+import com.naver.maps.map.compose.MapUiSettings
+import com.naver.maps.map.compose.Marker
+import com.naver.maps.map.compose.NaverMap
+import com.naver.maps.map.compose.rememberCameraPositionState
+import com.naver.maps.map.compose.rememberMarkerState
 import everypin.app.R
 import everypin.app.core.extension.findActivity
 import everypin.app.core.extension.showSnackBarForPermissionSetting
 import everypin.app.core.ui.theme.EveryPinTheme
-import everypin.app.data.model.PostModel
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalNaverMapApi::class)
 @Composable
 internal fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
@@ -107,44 +110,36 @@ internal fun HomeScreen(
 
             isLocationPermissionGranted = true
         }
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(LatLng(37.5668, 126.9783), 15f)
-    }
     val fusedLocationClient = remember {
         LocationServices.getFusedLocationProviderClient(context)
     }
     val postListState by homeViewModel.postListState.collectAsStateWithLifecycle()
+    val cameraPositionState = rememberCameraPositionState()
+    var currentLocationLatLng: LatLng? by remember {
+        mutableStateOf(null)
+    }
 
     LaunchedEffect(key1 = Unit) {
         if (isLocationPermissionGranted) {
             fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-                val latLng = location?.let {
+                currentLocationLatLng = location?.let {
                     LatLng(it.latitude, it.longitude)
                 }
-                val cameraUpdate = latLng?.let {
-                    CameraUpdateFactory.newLatLngZoom(it, 15f)
+                val cameraUpdate = currentLocationLatLng?.let {
+                    CameraUpdate.scrollTo(it).animate(CameraAnimation.Easing)
                 }
-                scope.launch {
-                    cameraUpdate?.let {
-                        cameraPositionState.move(it)
+                cameraUpdate?.let {
+                    scope.launch {
+                        cameraPositionState.animate(it)
                     }
                 }
             }
         }
     }
 
-    LaunchedEffect(key1 = cameraPositionState.position) {
-        if (!cameraPositionState.isMoving) {
-            homeViewModel.fetchPostList()
-        }
-    }
-
     HomeContainer(
         innerPadding = innerPadding,
-        isLocationPermissionGranted = isLocationPermissionGranted,
         snackBarHostState = snackBarHostState,
-        postListState = postListState,
-        cameraPositionState = cameraPositionState,
         onClickLocationButton = {
             isLocationPermissionGranted = locationPermissions.any {
                 ContextCompat.checkSelfPermission(
@@ -157,9 +152,12 @@ internal fun HomeScreen(
                 isLocationPermissionGranted -> {
                     fusedLocationClient.lastLocation.addOnSuccessListener {
                         scope.launch {
-                            cameraPositionState.animate(
-                                CameraUpdateFactory.newLatLng(LatLng(it.latitude, it.longitude))
-                            )
+                            val latLng = LatLng(it.latitude, it.longitude)
+                            val cameraUpdate =
+                                CameraUpdate.scrollTo(latLng)
+                                    .animate(CameraAnimation.Easing)
+                            currentLocationLatLng = latLng
+                            cameraPositionState.animate(cameraUpdate)
                         }
                     }
 
@@ -197,20 +195,60 @@ internal fun HomeScreen(
             }
         },
         onClickNotification = onNavigateToNotification,
-        onClickChat = onNavigateToChatList
+        onClickChat = onNavigateToChatList,
+        mapContent = {
+            NaverMap(
+                modifier = Modifier.fillMaxSize(),
+                cameraPositionState = cameraPositionState,
+                uiSettings = MapUiSettings(
+                    isRotateGesturesEnabled = false,
+                    isCompassEnabled = false,
+                    isZoomControlEnabled = false
+                )
+            ) {
+                DisposableMapEffect(key1 = Unit) { map ->
+                    val listener = OnCameraIdleListener {
+                        homeViewModel.fetchPostList()
+                    }
+                    map.addOnCameraIdleListener(listener)
+
+                    onDispose {
+                        map.removeOnCameraIdleListener(listener)
+                    }
+                }
+
+                currentLocationLatLng?.let {
+                    LocationOverlay(
+                        position = it
+                    )
+                }
+
+                postListState.forEach {
+                    Marker(
+                        state = rememberMarkerState(position = LatLng(it.latitude, it.longitude)),
+                        onClick = { _ ->
+                            Toast.makeText(
+                                context,
+                                "${it.latitude}, ${it.longitude}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            false
+                        }
+                    )
+                }
+            }
+        }
     )
 }
 
 @Composable
 private fun HomeContainer(
     innerPadding: PaddingValues,
-    isLocationPermissionGranted: Boolean,
     snackBarHostState: SnackbarHostState,
-    postListState: List<PostModel>,
-    cameraPositionState: CameraPositionState,
     onClickLocationButton: () -> Unit,
     onClickNotification: () -> Unit,
-    onClickChat: () -> Unit
+    onClickChat: () -> Unit,
+    mapContent: @Composable () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -224,25 +262,8 @@ private fun HomeContainer(
                 onClickNotification = onClickNotification,
                 onClickChat = onClickChat
             )
-            GoogleMap(
-                modifier = Modifier.weight(1f),
-                cameraPositionState = cameraPositionState,
-                properties = MapProperties(
-                    isMyLocationEnabled = isLocationPermissionGranted
-                ),
-                uiSettings = MapUiSettings(
-                    myLocationButtonEnabled = false,
-                    rotationGesturesEnabled = false,
-                    zoomControlsEnabled = false
-                )
-            ) {
-                postListState.forEach { post ->
-                    Marker(
-                        state = MarkerState(LatLng(post.latitude, post.longitude)),
-                        title = post.content,
-                        snippet = post.createdDate.toString()
-                    )
-                }
+            Box(modifier = Modifier.weight(1f)) {
+                mapContent()
             }
         }
         Box(
@@ -311,13 +332,11 @@ private fun HomeScreenPreview() {
     EveryPinTheme {
         HomeContainer(
             innerPadding = PaddingValues(),
-            isLocationPermissionGranted = true,
             snackBarHostState = SnackbarHostState(),
-            postListState = emptyList(),
-            cameraPositionState = rememberCameraPositionState(),
             onClickLocationButton = {},
             onClickNotification = {},
-            onClickChat = {}
+            onClickChat = {},
+            mapContent = {}
         )
     }
 }
