@@ -1,17 +1,19 @@
 package everypin.app.core.ui.navigation
 
 object GlobalNavigation {
-    private var handler: GlobalNavigationHandler? = null
+    private val handlerMap = mutableMapOf<String, GlobalNavigationHandler>()
 
-    fun setHandler(handler: GlobalNavigationHandler) {
-        this.handler = handler
+    fun addHandler(key: String, handler: GlobalNavigationHandler) {
+        handlerMap[key] = handler
     }
 
-    fun removeHandler() {
-        handler = null
+    fun removeHandler(key: String) {
+        handlerMap.remove(key)
     }
 
     fun navigateToSignIn() {
-        handler?.onNavigateToSignIn()
+        handlerMap.values.forEach {
+            it.onNavigateToSignIn()
+        }
     }
 }

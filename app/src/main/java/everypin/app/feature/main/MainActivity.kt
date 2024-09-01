@@ -1,5 +1,7 @@
 package everypin.app.feature.main
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,30 +18,30 @@ import dagger.hilt.android.AndroidEntryPoint
 import everypin.app.core.ui.navigation.GlobalNavigation
 import everypin.app.core.ui.navigation.GlobalNavigationHandler
 import everypin.app.core.ui.theme.EveryPinTheme
+import everypin.app.feature.login.LoginActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.util.UUID
 
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private val mainViewModel: MainViewModel by viewModels()
+    companion object {
+        fun startActivityWithClearAllTasks(context: Context) {
+            val intent = Intent(context, MainActivity::class.java).apply {
+                flags =
+                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+            context.startActivity(intent)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-        splashScreen.setKeepOnScreenCondition {
-            mainViewModel.shouldShowSplash
-        }
-
         setContent {
             EveryPinTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    MainScreen(
-                        mainViewModel = mainViewModel
-                    )
-                }
+                MainScreen()
             }
         }
     }

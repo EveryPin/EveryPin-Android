@@ -8,10 +8,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -28,59 +26,30 @@ import everypin.app.feature.chat.navigateChatSearch
 import everypin.app.feature.home.HomeRoute
 import everypin.app.feature.home.homeNavGraph
 import everypin.app.feature.home.navigateHome
+import everypin.app.feature.login.LoginActivity
 import everypin.app.feature.my.myNavGraph
 import everypin.app.feature.my.navigateMy
 import everypin.app.feature.setting.navigateSetting
 import everypin.app.feature.setting.settingNavGraph
-import everypin.app.feature.signin.SignInRoute
-import everypin.app.feature.signin.navigateSignIn
-import everypin.app.feature.signin.signInNavGraph
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import java.util.UUID
 
 @Composable
 internal fun MainScreen(
-    navController: NavHostController = rememberNavController(),
-    mainViewModel: MainViewModel
+    navController: NavHostController = rememberNavController()
 ) {
-    val authState by mainViewModel.authState.collectAsStateWithLifecycle()
-    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     DisposableEffect(key1 = Unit) {
         val handler = object : GlobalNavigationHandler {
             override fun onNavigateToSignIn() {
-                scope.launch(Dispatchers.Main) {
-                    navController.navigateSignIn(navOptions {
-                        popUpTo(SignInRoute.route) {
-                            inclusive = true
-                        }
-                    })
-                }
+                LoginActivity.startActivityWithClearAllTasks(context.applicationContext)
             }
         }
-        GlobalNavigation.setHandler(handler)
+        val key = "MainScreen_${UUID.randomUUID()}"
+        GlobalNavigation.addHandler(key, handler)
 
         onDispose {
-            GlobalNavigation.removeHandler()
-        }
-    }
-
-    DisposableEffect(authState) {
-        val listener = NavController.OnDestinationChangedListener { _, _, _ ->
-            if (authState != AuthState.LOADING) mainViewModel.hideSplashScreen()
-        }
-        navController.addOnDestinationChangedListener(listener)
-
-        if (authState == AuthState.NOT_AUTHENTICATED) {
-            navController.navigateSignIn(navOptions {
-                popUpTo(SignInRoute.route) {
-                    inclusive = true
-                }
-            })
-        }
-
-        onDispose {
-            navController.removeOnDestinationChangedListener(listener)
+            GlobalNavigation.removeHandler(key)
         }
     }
 
@@ -106,16 +75,6 @@ internal fun MainScreen(
                 navController = navController,
                 startDestination = HomeRoute.ROUTE
             ) {
-                signInNavGraph(
-                    onNavigateToHome = {
-                        navController.navigateHome(navOptions {
-                            popUpTo(SignInRoute.route) {
-                                inclusive = true
-                            }
-                            launchSingleTop = true
-                        })
-                    }
-                )
                 homeNavGraph(
                     innerPadding = innerPadding,
                     navController = navController

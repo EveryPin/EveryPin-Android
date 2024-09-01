@@ -1,4 +1,4 @@
-package everypin.app.feature.signin
+package everypin.app.feature.login
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -46,11 +46,11 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @Composable
-internal fun SignInScreen(
-    signInViewModel: SignInViewModel = hiltViewModel(),
+internal fun LoginScreen(
+    loginViewModel: LoginViewModel,
     onNavigateToHome: () -> Unit
 ) {
-    val signInState by signInViewModel.signInState.collectAsStateWithLifecycle()
+    val signInState by loginViewModel.signInState.collectAsStateWithLifecycle()
     val socialSignInHelper = rememberSocialSignInHelper()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -93,7 +93,7 @@ internal fun SignInScreen(
         }
     }
 
-    SignInContainer(
+    LoginContainer(
         signInState = signInState,
         onClickSignIn = { providerType ->
             scope.launch {
@@ -103,7 +103,7 @@ internal fun SignInScreen(
                     showSignInErrorDialog = true
                 }.collectLatest { token ->
                     if (token != null) {
-                        signInViewModel.signIn(providerType, token)
+                        loginViewModel.signIn(providerType, token)
                     } else {
                         signInErrorMsg = ContextCompat.getString(context, R.string.sign_in_error)
                         showSignInErrorDialog = true
@@ -115,7 +115,7 @@ internal fun SignInScreen(
 }
 
 @Composable
-private fun SignInContainer(
+private fun LoginContainer(
     signInState: SignInState,
     onClickSignIn: (ProviderType) -> Unit,
 ) {
@@ -174,9 +174,9 @@ private fun SignInContainer(
 
 @Preview(showBackground = true)
 @Composable
-private fun SignInScreenPreview() {
+private fun LoginScreenPreview() {
     EveryPinTheme {
-        SignInContainer(
+        LoginContainer(
             signInState = SignInState.Init,
             onClickSignIn = {},
         )
