@@ -1,9 +1,7 @@
 package everypin.app.data.repository
 
-import android.content.Context
-import androidx.core.net.toFile
-import dagger.hilt.android.qualifiers.ApplicationContext
-import everypin.app.data.model.PostModel
+import everypin.app.data.model.PhotoPost
+import everypin.app.data.model.PostPin
 import everypin.app.network.api.PostApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -20,25 +18,23 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 class PostRepositoryImpl @Inject constructor(
-    private val postApi: PostApi,
-    @ApplicationContext private val context: Context
+    private val postApi: PostApi
 ) : PostRepository {
-    override fun getPostList(): Flow<List<PostModel>> = flow {
-        val resp = postApi.getPostList()
+    override fun getRangePostPins(lng: Double, lat: Double, range: Int): Flow<List<PostPin>> = flow {
+        val resp = postApi.getRangePosts(lng, lat, range)
         val data = resp.body()
-        if (data != null) {
-            val postList = data.map {
-                val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
-                val createdDate = LocalDateTime.parse(it.createdDate, formatter)
-                PostModel(
-                    id = it.postId,
-                    content = it.postContent,
-                    createdDate = createdDate,
-                    latitude = it.y,
-                    longitude = it.x
+        if (resp.isSuccessful) {
+            val posts = data?.filter {
+                it.postId != null && it.x != null && it.y != null && it.postPhotos != null
+            }?.map {
+                PostPin(
+                    id = it.postId!!,
+                    lat = it.y!!,
+                    lng = it.x!!,
+                    imageUrl = it.postPhotos!!.first().photoUrl!!
                 )
-            }
-            emit(postList)
+            } ?: emptyList()
+            emit(posts)
         } else {
             throw HttpException(resp)
         }
@@ -67,19 +63,20 @@ class PostRepositoryImpl @Inject constructor(
         }
     }.flowOn(Dispatchers.IO)
 
-    override fun getPost(postId: Int): Flow<PostModel> = flow {
+    override fun getPost(postId: Int): Flow<PhotoPost> = flow {
         val resp = postApi.getPost(postId)
         val data = resp.body()
 
-        if (data != null) {
+        if (resp.isSuccessful && data != null) {
             val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
             val createdDate = LocalDateTime.parse(data.createdDate, formatter)
-            val post = PostModel(
-                id = data.postId,
-                content = data.postContent,
+            val post = PhotoPost(
+                id = data.postId!!,
+                content = data.postContent!!,
                 createdDate = createdDate,
-                latitude = data.x,
-                longitude = data.y
+                latitude = data.x!!,
+                longitude = data.y!!,
+                photoUrls = data.postPhotos!!.map { it.photoUrl!! }
             )
             emit(post)
         } else {

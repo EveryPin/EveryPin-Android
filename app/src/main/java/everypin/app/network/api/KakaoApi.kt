@@ -1,6 +1,6 @@
 package everypin.app.network.api
 
-import everypin.app.network.dto.kakao.KakaoLocalSearchKeywordResponse
+import everypin.app.network.model.kakao.KakaoLocalSearchKeywordResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

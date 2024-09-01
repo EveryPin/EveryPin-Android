@@ -113,7 +113,7 @@ internal fun HomeScreen(
     val fusedLocationClient = remember {
         LocationServices.getFusedLocationProviderClient(context)
     }
-    val postListState by homeViewModel.postListState.collectAsStateWithLifecycle()
+    val postListState by homeViewModel.postPinsState.collectAsStateWithLifecycle()
     val cameraPositionState = rememberCameraPositionState()
     var currentLocationLatLng: LatLng? by remember {
         mutableStateOf(null)
@@ -208,7 +208,9 @@ internal fun HomeScreen(
             ) {
                 DisposableMapEffect(key1 = Unit) { map ->
                     val listener = OnCameraIdleListener {
-                        homeViewModel.fetchPostList()
+                        val latLng = cameraPositionState.position.target
+                        // FIXME: 줌레벨에 따라서 range 넣어야 함.
+                        homeViewModel.fetchRangePostList(latLng.longitude, latLng.latitude, 300)
                     }
                     map.addOnCameraIdleListener(listener)
 
@@ -225,11 +227,11 @@ internal fun HomeScreen(
 
                 postListState.forEach {
                     Marker(
-                        state = rememberMarkerState(position = LatLng(it.latitude, it.longitude)),
+                        state = rememberMarkerState(position = LatLng(it.lat, it.lng)),
                         onClick = { _ ->
                             Toast.makeText(
                                 context,
-                                "${it.latitude}, ${it.longitude}",
+                                "${it.lat}, ${it.lng}",
                                 Toast.LENGTH_SHORT
                             ).show()
                             false

@@ -1,4 +1,4 @@
-package everypin.app.network.dto.post
+package everypin.app.network.model.post
 
 
 import com.squareup.moshi.Json

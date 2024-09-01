@@ -1,4 +1,4 @@
-package everypin.app.network.dto.auth
+package everypin.app.network.model.auth
 
 
 import com.squareup.moshi.Json

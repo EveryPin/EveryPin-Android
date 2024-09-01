@@ -1,4 +1,4 @@
-package everypin.app.network.dto.kakao
+package everypin.app.network.model.kakao
 
 
 import com.squareup.moshi.Json

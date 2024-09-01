@@ -5,7 +5,7 @@ import everypin.app.core.ui.navigation.GlobalNavigation
 import everypin.app.datastore.DataStorePreferences
 import everypin.app.datastore.PreferencesKey
 import everypin.app.network.api.TokenApi
-import everypin.app.network.dto.auth.TokenRefreshRequest
+import everypin.app.network.model.auth.TokenRefreshRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
