@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -38,11 +38,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import everypin.app.R
-import everypin.app.data.model.ChatListModel
 import everypin.app.core.ui.component.CommonAsyncImage
 import everypin.app.core.ui.preview.provider.ChatListPreviewParameterProvider
 import everypin.app.core.ui.state.UIState
 import everypin.app.core.ui.theme.EveryPinTheme
+import everypin.app.data.model.ChatListModel
 import everypin.app.feature.chat.viewmodel.ChatListViewModel
 import java.time.format.DateTimeFormatter
 
@@ -148,7 +148,7 @@ private fun ChatListItem(
     Row(
         modifier = Modifier
             .clickable(
-                indication = rememberRipple(),
+                indication = ripple(),
                 interactionSource = remember { MutableInteractionSource() },
                 onClick = onClick
             )

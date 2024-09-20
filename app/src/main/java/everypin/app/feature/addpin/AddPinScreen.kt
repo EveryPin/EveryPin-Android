@@ -24,7 +24,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.LocalRippleTheme
+import androidx.compose.material.ripple.RippleAlpha
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
@@ -34,7 +34,9 @@ import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.LocalMinimumInteractiveComponentEnforcement
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
+import androidx.compose.material3.LocalRippleConfiguration
+import androidx.compose.material3.RippleConfiguration
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -59,6 +61,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -74,7 +77,6 @@ import everypin.app.core.extension.removeTempImagesDir
 import everypin.app.core.ui.component.CommonAsyncImage
 import everypin.app.core.ui.component.dialog.PermissionAlertDialog
 import everypin.app.core.ui.theme.EveryPinTheme
-import everypin.app.core.ui.theme.NoRippleTheme
 import everypin.app.core.utils.FileUtil
 import everypin.app.core.utils.Logger
 import everypin.app.data.model.PlaceInfo
@@ -478,8 +480,15 @@ private fun ImageLazyRow(
                     contentScale = ContentScale.Crop
                 )
                 CompositionLocalProvider(
-                    LocalMinimumInteractiveComponentEnforcement provides false,
-                    LocalRippleTheme provides NoRippleTheme
+                    LocalMinimumInteractiveComponentSize provides Dp.Unspecified,
+                    LocalRippleConfiguration provides RippleConfiguration(
+                        rippleAlpha = RippleAlpha(
+                            0f,
+                            0f,
+                            0f,
+                            0f
+                        )
+                    )
                 ) {
                     IconButton(
                         onClick = {

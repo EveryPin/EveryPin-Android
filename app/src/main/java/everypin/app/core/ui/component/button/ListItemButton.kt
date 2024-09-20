@@ -3,10 +3,10 @@ package everypin.app.core.ui.component.button
 import androidx.compose.foundation.Indication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -24,7 +24,7 @@ fun ListItemButton(
     colors: ListItemColors = ListItemDefaults.colors(),
     tonalElevation: Dp = ListItemDefaults.Elevation,
     shadowElevation: Dp = ListItemDefaults.Elevation,
-    indication: Indication = rememberRipple(),
+    indication: Indication = ripple(),
     interactionSource: MutableInteractionSource = remember {
         MutableInteractionSource()
     }

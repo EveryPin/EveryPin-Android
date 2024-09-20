@@ -90,10 +90,6 @@ android {
     }
 }
 
-composeCompiler {
-    enableStrongSkippingMode = true
-}
-
 fun getLocalPropertyValue(key: String): String {
     return gradleLocalProperties(rootDir, providers).getProperty(key)
 }
