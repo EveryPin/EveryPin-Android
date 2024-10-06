@@ -20,7 +20,7 @@ import javax.inject.Inject
 class PostRepositoryImpl @Inject constructor(
     private val postApi: PostApi
 ) : PostRepository {
-    override fun getRangePostPins(lng: Double, lat: Double, range: Int): Flow<List<PostPin>> = flow {
+    override fun getRangePostPins(lng: Double, lat: Double, range: Double): Flow<List<PostPin>> = flow {
         val resp = postApi.getRangePosts(lng, lat, range)
         val data = resp.body()
         if (resp.isSuccessful) {

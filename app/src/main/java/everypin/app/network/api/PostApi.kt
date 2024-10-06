@@ -39,6 +39,6 @@ interface PostApi {
     suspend fun getRangePosts(
         @Path("x") x: Double,
         @Path("y") y: Double,
-        @Path("range") range: Int
+        @Path("range") range: Double
     ): Response<List<PhotoPostDto>>
 }

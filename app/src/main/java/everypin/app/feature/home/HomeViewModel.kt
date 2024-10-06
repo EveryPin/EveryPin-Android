@@ -21,7 +21,7 @@ class HomeViewModel @Inject constructor(
     private val _postPinsState = MutableStateFlow<List<PostPin>>(emptyList())
     val postPinsState = _postPinsState.asStateFlow()
 
-    fun fetchRangePostList(x: Double, y: Double, range: Int) {
+    fun fetchRangePostList(x: Double, y: Double, range: Double) {
         viewModelScope.launch {
             postRepository.getRangePostPins(lng = x, lat = y, range = range).catch {
                 Logger.e("게시물 목록을 가져오는데 실패", it)

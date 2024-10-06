@@ -2,6 +2,7 @@ package everypin.app.feature.home
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -33,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -59,6 +61,8 @@ import everypin.app.R
 import everypin.app.core.extension.findActivity
 import everypin.app.core.extension.showSnackBarForPermissionSetting
 import everypin.app.core.ui.theme.EveryPinTheme
+import everypin.app.core.utils.CommonUtil
+import everypin.app.core.utils.Logger
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalNaverMapApi::class)
@@ -206,11 +210,25 @@ internal fun HomeScreen(
                     isZoomControlEnabled = false
                 )
             ) {
+                val configuration = LocalConfiguration.current
                 DisposableMapEffect(key1 = Unit) { map ->
                     val listener = OnCameraIdleListener {
-                        val latLng = cameraPositionState.position.target
-                        // FIXME: 줌레벨에 따라서 range 넣어야 함.
-                        homeViewModel.fetchRangePostList(latLng.longitude, latLng.latitude, 300)
+                        val currentLatLng = cameraPositionState.position.target
+                        val radiusDistance =
+                            map.projection.metersPerDp * configuration.screenHeightDp / 2
+                        val targetLatLng = CommonUtil.calculateNewCoordinates(
+                            currentLatLng.latitude,
+                            currentLatLng.longitude,
+                            radiusDistance,
+                            0.0
+                        )
+                        val range = CommonUtil.calculateDistanceByCoordinates(
+                            currentLatLng.longitude,
+                            currentLatLng.latitude,
+                            targetLatLng.second,
+                            targetLatLng.first
+                        )
+                        homeViewModel.fetchRangePostList(currentLatLng.longitude, currentLatLng.latitude, range)
                     }
                     map.addOnCameraIdleListener(listener)
 

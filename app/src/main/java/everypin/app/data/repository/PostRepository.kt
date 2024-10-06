@@ -5,7 +5,7 @@ import everypin.app.data.model.PostPin
 import kotlinx.coroutines.flow.Flow
 
 interface PostRepository {
-    fun getRangePostPins(lng: Double, lat: Double, range: Int): Flow<List<PostPin>>
+    fun getRangePostPins(lng: Double, lat: Double, range: Double): Flow<List<PostPin>>
     fun writePost(
         content: String,
         lat: Double,
