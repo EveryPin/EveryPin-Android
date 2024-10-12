@@ -2,8 +2,6 @@ package everypin.app.feature.home
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -62,7 +60,6 @@ import everypin.app.core.extension.findActivity
 import everypin.app.core.extension.showSnackBarForPermissionSetting
 import everypin.app.core.ui.theme.EveryPinTheme
 import everypin.app.core.utils.CommonUtil
-import everypin.app.core.utils.Logger
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalNaverMapApi::class)
@@ -71,7 +68,8 @@ internal fun HomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel(),
     innerPadding: PaddingValues,
     onNavigateToNotification: () -> Unit,
-    onNavigateToChatList: () -> Unit
+    onNavigateToChatList: () -> Unit,
+    onNavigateToPostDetail: (id: Int) -> Unit,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -228,7 +226,11 @@ internal fun HomeScreen(
                             targetLatLng.second,
                             targetLatLng.first
                         )
-                        homeViewModel.fetchRangePostList(currentLatLng.longitude, currentLatLng.latitude, range)
+                        homeViewModel.fetchRangePostList(
+                            currentLatLng.longitude,
+                            currentLatLng.latitude,
+                            range
+                        )
                     }
                     map.addOnCameraIdleListener(listener)
 
@@ -247,11 +249,7 @@ internal fun HomeScreen(
                     Marker(
                         state = rememberMarkerState(position = LatLng(it.lat, it.lng)),
                         onClick = { _ ->
-                            Toast.makeText(
-                                context,
-                                "${it.lat}, ${it.lng}",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            onNavigateToPostDetail(it.id)
                             false
                         }
                     )

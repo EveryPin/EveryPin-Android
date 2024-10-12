@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.firebase.perf)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -150,4 +151,6 @@ dependencies {
     implementation(libs.androidx.paging.compose)
 
     implementation(libs.naver.map.compose)
+
+    implementation(libs.kotlinx.serialization.json)
 }

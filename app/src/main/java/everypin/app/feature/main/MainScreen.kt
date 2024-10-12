@@ -29,6 +29,7 @@ import everypin.app.feature.home.navigateHome
 import everypin.app.feature.login.LoginActivity
 import everypin.app.feature.my.myNavGraph
 import everypin.app.feature.my.navigateMy
+import everypin.app.feature.post.postNavGraph
 import everypin.app.feature.setting.navigateSetting
 import everypin.app.feature.setting.settingNavGraph
 import java.util.UUID
@@ -105,6 +106,7 @@ internal fun MainScreen(
                         navController.navigateChatSearch()
                     }
                 )
+                postNavGraph(navController)
             }
         }
     }

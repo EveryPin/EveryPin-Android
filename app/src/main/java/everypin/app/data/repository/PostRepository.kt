@@ -1,6 +1,6 @@
 package everypin.app.data.repository
 
-import everypin.app.data.model.PhotoPost
+import everypin.app.data.model.PostDetail
 import everypin.app.data.model.PostPin
 import kotlinx.coroutines.flow.Flow
 
@@ -13,5 +13,5 @@ interface PostRepository {
         imagePaths: List<String>
     ): Flow<Unit>
 
-    fun getPost(postId: Int): Flow<PhotoPost>
+    fun getPost(postId: Int): Flow<PostDetail>
 }

@@ -1,7 +1,7 @@
 package everypin.app.data.repository
 
 import everypin.app.core.constant.ProviderType
-import everypin.app.core.utils.Logger
+import everypin.app.core.extension.toHttpError
 import everypin.app.datastore.DataStorePreferences
 import everypin.app.datastore.PreferencesKey
 import everypin.app.network.api.AuthenticationApi
@@ -9,7 +9,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import retrofit2.HttpException
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -18,7 +17,7 @@ class AuthRepositoryImpl @Inject constructor(
 ) : AuthRepository {
     override fun login(providerType: ProviderType, token: String): Flow<Unit> = flow {
         val resp = authenticationApi.login(
-            platformCode = when(providerType) {
+            platformCode = when (providerType) {
                 ProviderType.GOOGLE -> "GOOGLE"
                 ProviderType.KAKAO -> "KAKAO"
             },
@@ -31,7 +30,7 @@ class AuthRepositoryImpl @Inject constructor(
             dataStorePreferences.putString(PreferencesKey.REFRESH_TOKEN, data.refreshToken)
             emit(Unit)
         } else {
-            throw HttpException(resp)
+            throw resp.toHttpError()
         }
     }.flowOn(Dispatchers.IO)
 }

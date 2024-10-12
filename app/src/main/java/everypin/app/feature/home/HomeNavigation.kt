@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import everypin.app.core.ui.animation.animateComposable
 import everypin.app.feature.chat.navigateChatList
+import everypin.app.feature.post.navigateToPostDetail
 
 fun NavController.navigateHome(navOptions: NavOptions) {
     navigate(HomeRoute.ROUTE, navOptions)
@@ -41,6 +42,9 @@ fun NavGraphBuilder.homeNavGraph(
                 },
                 onNavigateToChatList = {
                     navController.navigateChatList()
+                },
+                onNavigateToPostDetail = {
+                    navController.navigateToPostDetail(it)
                 }
             )
         }

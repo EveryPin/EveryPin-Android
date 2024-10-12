@@ -7,15 +7,17 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class PostDto(
     @Json(name = "createdDate")
-    val createdDate: String,
+    val createdDate: String?,
     @Json(name = "postContent")
-    val postContent: String,
+    val postContent: String?,
     @Json(name = "postId")
-    val postId: Int,
+    val postId: Int?,
+    @Json(name = "postPhotos")
+    val postPhotos: List<PostPhotoDto>?,
     @Json(name = "updateDate")
-    val updateDate: String?,
+    val updateDate: Any?,
     @Json(name = "x")
-    val x: Double,
+    val x: Double?,
     @Json(name = "y")
-    val y: Double
+    val y: Double?
 )

@@ -1,7 +1,7 @@
 package everypin.app.network.api
 
 import everypin.app.network.constant.AUTHORIZATION_ACCESS_TOKEN
-import everypin.app.network.model.post.PhotoPostDto
+import everypin.app.network.model.post.PostDetailDto
 import everypin.app.network.model.post.PostDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -14,10 +14,6 @@ import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface PostApi {
-    @GET("/api/post")
-    @Headers(AUTHORIZATION_ACCESS_TOKEN)
-    suspend fun getPostList(): Response<List<PostDto>>
-
     @Multipart
     @POST("/api/post")
     @Headers(AUTHORIZATION_ACCESS_TOKEN)
@@ -32,7 +28,7 @@ interface PostApi {
     @Headers(AUTHORIZATION_ACCESS_TOKEN)
     suspend fun getPost(
         @Path("postId") postId: Int
-    ): Response<PhotoPostDto>
+    ): Response<PostDetailDto>
 
     @GET("/api/post/{x}/{y}/{range}")
     @Headers(AUTHORIZATION_ACCESS_TOKEN)
@@ -40,5 +36,5 @@ interface PostApi {
         @Path("x") x: Double,
         @Path("y") y: Double,
         @Path("range") range: Double
-    ): Response<List<PhotoPostDto>>
+    ): Response<List<PostDto>>
 }
