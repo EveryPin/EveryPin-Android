@@ -1,12 +1,13 @@
 package everypin.app.feature.setting
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,77 +49,84 @@ private fun SettingContainer(
 ) {
     var isCheckedPush by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        CenterAlignedTopAppBar(
-            title = {
-                Text(
-                    text = stringResource(id = R.string.setting)
-                )
-            },
-            navigationIcon = {
-                IconButton(onClick = onBack) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_arrow_back),
-                        contentDescription = stringResource(id = R.string.back)
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.setting)
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_arrow_back),
+                            contentDescription = stringResource(id = R.string.back)
+                        )
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            ListItem(
+                headlineContent = {
+                    Text(
+                        text = stringResource(id = R.string.push_noti_setting)
+                    )
+                },
+                trailingContent = {
+                    Switch(
+                        checked = isCheckedPush,
+                        onCheckedChange = {
+                            isCheckedPush = it
+                        }
                     )
                 }
-            }
-        )
-        ListItem(
-            headlineContent = {
-                Text(
-                    text = stringResource(id = R.string.push_noti_setting)
-                )
-            },
-            trailingContent = {
-                Switch(
-                    checked = isCheckedPush,
-                    onCheckedChange = {
-                        isCheckedPush = it
-                    }
-                )
-            }
-        )
-        ListItemButton(
-            onClick = onClickBlockList,
-            headlineContent = {
-                Text(
-                    text = stringResource(id = R.string.block_list)
-                )
-            }
-        )
-        ListItemButton(
-            onClick = onClickSignOut,
-            headlineContent = {
-                Text(
-                    text = stringResource(id = R.string.sign_out)
-                )
-            }
-        )
-        ListItemButton(
-            onClick = onClickTerms,
-            headlineContent = {
-                Text(
-                    text = stringResource(id = R.string.terms)
-                )
-            }
-        )
-        ListItemButton(
-            onClick = onClickPrivacyPolicy,
-            headlineContent = {
-                Text(
-                    text = stringResource(id = R.string.privacy_policy)
-                )
-            }
-        )
-        ListItemButton(
-            onClick = onClickDeleteAccount,
-            headlineContent = {
-                Text(
-                    text = stringResource(id = R.string.delete_account)
-                )
-            }
-        )
+            )
+            ListItemButton(
+                onClick = onClickBlockList,
+                headlineContent = {
+                    Text(
+                        text = stringResource(id = R.string.block_list)
+                    )
+                }
+            )
+            ListItemButton(
+                onClick = onClickSignOut,
+                headlineContent = {
+                    Text(
+                        text = stringResource(id = R.string.sign_out)
+                    )
+                }
+            )
+            ListItemButton(
+                onClick = onClickTerms,
+                headlineContent = {
+                    Text(
+                        text = stringResource(id = R.string.terms)
+                    )
+                }
+            )
+            ListItemButton(
+                onClick = onClickPrivacyPolicy,
+                headlineContent = {
+                    Text(
+                        text = stringResource(id = R.string.privacy_policy)
+                    )
+                }
+            )
+            ListItemButton(
+                onClick = onClickDeleteAccount,
+                headlineContent = {
+                    Text(
+                        text = stringResource(id = R.string.delete_account)
+                    )
+                }
+            )
+        }
     }
 }
 

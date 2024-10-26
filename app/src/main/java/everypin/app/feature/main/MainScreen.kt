@@ -1,44 +1,48 @@
 package everypin.app.feature.main
 
-import androidx.compose.foundation.background
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navOptions
+import everypin.app.R
 import everypin.app.core.ui.navigation.GlobalNavigation
 import everypin.app.core.ui.navigation.GlobalNavigationHandler
-import everypin.app.feature.addpin.addPinNavGraph
-import everypin.app.feature.addpin.navigateAddPin
-import everypin.app.feature.chat.chatNavGraph
-import everypin.app.feature.chat.navigateChatRoom
-import everypin.app.feature.chat.navigateChatSearch
-import everypin.app.feature.home.HomeRoute
-import everypin.app.feature.home.homeNavGraph
-import everypin.app.feature.home.navigateHome
+import everypin.app.feature.chat.chatGraph
 import everypin.app.feature.login.LoginActivity
-import everypin.app.feature.my.myNavGraph
-import everypin.app.feature.my.navigateMy
-import everypin.app.feature.post.postNavGraph
-import everypin.app.feature.setting.navigateSetting
-import everypin.app.feature.setting.settingNavGraph
+import everypin.app.feature.notification.notificationGraph
+import everypin.app.feature.post.postGraph
+import everypin.app.feature.setting.settingGraph
 import java.util.UUID
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun MainScreen(
     navController: NavHostController = rememberNavController()
 ) {
     val context = LocalContext.current
+    val currentDestination = navController.currentBackStackEntryAsState().value?.destination
+    val density = LocalDensity.current
 
     DisposableEffect(key1 = Unit) {
         val handler = object : GlobalNavigationHandler {
@@ -56,95 +60,85 @@ internal fun MainScreen(
 
     Scaffold(
         bottomBar = {
-            val navBackStackEntry by navController.currentBackStackEntryAsState()
-
-            MainNavBar(
-                visible = shouldShowBottomNavigationBar(navBackStackEntry?.destination?.route),
-                currentDestination = navBackStackEntry?.destination,
-                onClickTab = {
-                    onClickMainNavTab(navController, it, navBackStackEntry?.destination?.route)
-                }
-            )
+            AnimatedVisibility(
+                visible = currentDestination?.shouldShowBottomBar() == true,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                MainNavBar(
+                    currentDestination = currentDestination,
+                    onClick = { route ->
+                        if (route is AddPinRoute) {
+                            navController.navigateToAddPin()
+                        } else {
+                            navController.navigate(route) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                restoreState = true
+                                launchSingleTop = true
+                            }
+                        }
+                    }
+                )
+            }
         }
     ) { innerPadding ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.background)
+            modifier = Modifier.fillMaxSize()
         ) {
             NavHost(
                 navController = navController,
-                startDestination = HomeRoute.ROUTE
+                startDestination = HomeRoute
             ) {
-                homeNavGraph(
-                    innerPadding = innerPadding,
-                    navController = navController
+                topLevelGraph(
+                    navController = navController,
+                    innerPadding = innerPadding
                 )
-                addPinNavGraph()
-                myNavGraph(
-                    innerPadding = innerPadding,
-                    onBack = {
-                        navController.popBackStack()
-                    },
-                    onNavigateToSetting = {
-                        navController.navigateSetting()
-                    }
-                )
-                settingNavGraph(
-                    onBack = {
-                        navController.popBackStack()
-                    }
-                )
-                chatNavGraph(
-                    onBack = {
-                        navController.popBackStack()
-                    },
-                    onNavigateToChatRoom = {
-                        navController.navigateChatRoom()
-                    },
-                    onNavigateToChatSearch = {
-                        navController.navigateChatSearch()
-                    }
-                )
-                postNavGraph(navController)
+                notificationGraph(navController = navController)
+                settingGraph(navController = navController)
+                chatGraph(navController = navController)
+                postGraph(navController = navController)
             }
         }
     }
 }
 
-private fun shouldShowBottomNavigationBar(route: String?): Boolean {
-    if (MainTab.ADD_PIN.route == route) return false
-
-    return MainTab.entries.any { route?.startsWith(it.route) == true }
-}
-
-private fun onClickMainNavTab(
-    navController: NavHostController,
-    tab: MainTab,
-    currentRoute: String?
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeTopAppBar(
+    modifier: Modifier = Modifier,
+    onClickNotification: () -> Unit,
+    onClickChat: () -> Unit
 ) {
-    val startDestinationId = navController.graph.findStartDestination().id
-
-    when (tab) {
-        MainTab.HOME -> {
-            if (currentRoute == HomeRoute.map()) return
-
-            navController.navigateHome(navOptions {
-                popUpTo(startDestinationId) {
-                    saveState = true
-                }
-                restoreState = currentRoute?.startsWith(tab.route) != true
-                launchSingleTop = true
-            })
-        }
-
-        MainTab.ADD_PIN -> navController.navigateAddPin()
-        MainTab.MY -> navController.navigateMy(navOptions {
-            popUpTo(startDestinationId) {
-                saveState = true
+    TopAppBar(
+        title = {
+            Text(stringResource(id = R.string.app_name))
+        },
+        modifier = modifier,
+        actions = {
+            IconButton(
+                onClick = onClickNotification
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_notifications),
+                    contentDescription = stringResource(id = R.string.notification),
+                )
             }
-            restoreState = true
-            launchSingleTop = true
-        })
-    }
+            IconButton(
+                onClick = onClickChat
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_chat),
+                    contentDescription = stringResource(id = R.string.chat),
+                )
+            }
+        }
+    )
+}
+
+private fun NavDestination.shouldShowBottomBar(): Boolean {
+    if (hasRoute(AddPinRoute::class)) return false
+
+    return topLevelRoutes.any { hasRoute(it.route::class) }
 }

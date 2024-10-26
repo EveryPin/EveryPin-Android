@@ -4,30 +4,28 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.navigation
 import everypin.app.core.ui.animation.animateComposable
+import kotlinx.serialization.Serializable
 
-fun NavController.navigateSetting() {
-    navigate(SettingRoute.menu())
+@Serializable
+object SettingNavigation
+
+@Serializable
+object SettingRoute
+
+fun NavController.navigateToSetting() {
+    navigate(SettingRoute)
 }
 
-fun NavGraphBuilder.settingNavGraph(
-    onBack: () -> Unit
-) {
-    navigation(
-        startDestination = SettingRoute.menu(),
-        route = SettingRoute.route
+fun NavGraphBuilder.settingGraph(navController: NavController) {
+    navigation<SettingNavigation>(
+        startDestination = SettingRoute
     ) {
-        animateComposable(
-            route = SettingRoute.menu()
-        ) {
+        animateComposable<SettingRoute> {
             SettingScreen(
-                onBack = onBack
+                onBack = {
+                    navController.popBackStack()
+                }
             )
         }
     }
-}
-
-object SettingRoute {
-    const val route = "setting"
-
-    fun menu() = "$route/menu"
 }

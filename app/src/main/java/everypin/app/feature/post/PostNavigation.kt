@@ -15,7 +15,7 @@ fun NavController.navigateToPostDetail(id: Int, navOptions: NavOptions? = null) 
     navigate(PostDetailRoute(id = id), navOptions)
 }
 
-fun NavGraphBuilder.postNavGraph(
+fun NavGraphBuilder.postGraph(
     navController: NavController
 ) {
     animateComposable<PostDetailRoute> { backStackEntry ->

@@ -1,14 +1,14 @@
-package everypin.app.feature.home
+package everypin.app.feature.notification
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,41 +20,44 @@ import everypin.app.core.ui.theme.EveryPinTheme
 
 @Composable
 internal fun NotificationScreen(
-    innerPadding: PaddingValues,
     onBack: () -> Unit
 ) {
     BackHandler(onBack = onBack)
 
     NotificationContainer(
-        innerPadding = innerPadding,
         onBack = onBack,
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun NotificationContainer(
-    innerPadding: PaddingValues,
+fun NotificationContainer(
     onBack: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .padding(bottom = innerPadding.calculateBottomPadding())
-            .fillMaxSize()
-    ) {
-        CenterAlignedTopAppBar(
-            title = {
-                Text(text = stringResource(id = R.string.notification))
-            },
-            navigationIcon = {
-                IconButton(onClick = onBack) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_arrow_back),
-                        contentDescription = stringResource(id = R.string.back)
-                    )
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(text = stringResource(id = R.string.notification))
+                },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_arrow_back),
+                            contentDescription = stringResource(id = R.string.back)
+                        )
+                    }
                 }
-            }
-        )
+            )
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+        ) {
+
+        }
     }
 }
 
@@ -63,7 +66,6 @@ private fun NotificationContainer(
 private fun NotificationScreenPreview() {
     EveryPinTheme {
         NotificationContainer(
-            innerPadding = PaddingValues(),
             onBack = {}
         )
     }

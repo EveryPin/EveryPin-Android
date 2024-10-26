@@ -13,14 +13,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.Surface
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,7 +32,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
@@ -60,6 +56,7 @@ import everypin.app.core.extension.findActivity
 import everypin.app.core.extension.showSnackBarForPermissionSetting
 import everypin.app.core.ui.theme.EveryPinTheme
 import everypin.app.core.utils.CommonUtil
+import everypin.app.feature.main.HomeTopAppBar
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalNaverMapApi::class)
@@ -259,6 +256,7 @@ internal fun HomeScreen(
     )
 }
 
+
 @Composable
 private fun HomeContainer(
     innerPadding: PaddingValues,
@@ -268,80 +266,49 @@ private fun HomeContainer(
     onClickChat: () -> Unit,
     mapContent: @Composable () -> Unit
 ) {
-    Box(
-        modifier = Modifier
-            .padding(bottom = innerPadding.calculateBottomPadding())
-            .fillMaxSize()
+    Surface(
+        modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-        ) {
+        Column {
             HomeTopAppBar(
                 onClickNotification = onClickNotification,
                 onClickChat = onClickChat
             )
-            Box(modifier = Modifier.weight(1f)) {
-                mapContent()
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    mapContent()
+                }
+                Box(
+                    modifier = Modifier
+                        .padding(bottom = 20.dp, end = 10.dp)
+                        .align(Alignment.BottomEnd)
+                        .background(
+                            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.8f),
+                            shape = RoundedCornerShape(3.dp)
+                        )
+                        .clip(RoundedCornerShape(3.dp))
+                        .clickable(
+                            indication = ripple(),
+                            interactionSource = remember { MutableInteractionSource() },
+                            onClick = onClickLocationButton
+                        )
+                        .padding(10.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_my_location),
+                        contentDescription = null
+                    )
+                }
+                SnackbarHost(
+                    hostState = snackBarHostState,
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                )
             }
         }
-        Box(
-            modifier = Modifier
-                .padding(bottom = 20.dp, end = 10.dp)
-                .align(Alignment.BottomEnd)
-                .background(
-                    color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.8f),
-                    shape = RoundedCornerShape(3.dp)
-                )
-                .clip(RoundedCornerShape(3.dp))
-                .clickable(
-                    indication = ripple(),
-                    interactionSource = remember { MutableInteractionSource() },
-                    onClick = onClickLocationButton
-                )
-                .padding(10.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_my_location),
-                contentDescription = null
-            )
-        }
-        SnackbarHost(
-            hostState = snackBarHostState,
-            modifier = Modifier.align(Alignment.BottomCenter)
-        )
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun HomeTopAppBar(
-    onClickNotification: () -> Unit,
-    onClickChat: () -> Unit
-) {
-    TopAppBar(
-        title = {
-            Text(stringResource(id = R.string.app_name))
-        },
-        actions = {
-            IconButton(
-                onClick = onClickNotification
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_notifications),
-                    contentDescription = stringResource(id = R.string.notification),
-                )
-            }
-            IconButton(
-                onClick = onClickChat
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_chat),
-                    contentDescription = stringResource(id = R.string.chat),
-                )
-            }
-        }
-    )
 }
 
 @Preview(showBackground = true)

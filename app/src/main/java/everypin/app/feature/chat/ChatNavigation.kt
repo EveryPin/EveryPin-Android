@@ -7,59 +7,65 @@ import everypin.app.core.ui.animation.animateComposable
 import everypin.app.feature.chat.view.ChatListScreen
 import everypin.app.feature.chat.view.ChatRoomScreen
 import everypin.app.feature.chat.view.ChatSearchScreen
+import kotlinx.serialization.Serializable
 
-fun NavController.navigateChatList() {
-    navigate(ChatRoute.chatList())
+@Serializable
+object ChatNavigation
+
+@Serializable
+object ChatListRoute
+
+@Serializable
+object ChatSearchRoute
+
+@Serializable
+object ChatRoomRoute
+
+fun NavController.navigateToChatList() {
+    navigate(ChatListRoute)
 }
 
-fun NavController.navigateChatSearch() {
-    navigate(ChatRoute.chatSearch())
+fun NavController.navigateToChatSearch() {
+    navigate(ChatSearchRoute)
 }
 
-fun NavController.navigateChatRoom() {
-    navigate(ChatRoute.chatRoom())
+fun NavController.navigateToChatRoom() {
+    navigate(ChatRoomRoute)
 }
 
-fun NavGraphBuilder.chatNavGraph(
-    onBack: () -> Unit,
-    onNavigateToChatSearch: () -> Unit,
-    onNavigateToChatRoom: () -> Unit
-) {
-    navigation(
-        startDestination = ChatRoute.chatList(),
-        route = ChatRoute.route
+fun NavGraphBuilder.chatGraph(navController: NavController) {
+    navigation<ChatNavigation>(
+        startDestination = ChatListRoute
     ) {
-        animateComposable(
-            route = ChatRoute.chatList()
-        ) {
+        animateComposable<ChatListRoute> {
             ChatListScreen(
-                onBack = onBack,
-                onNavigateToChatSearch = onNavigateToChatSearch,
-                onNavigateToChatRoom = onNavigateToChatRoom
+                onBack = {
+                    navController.popBackStack()
+                },
+                onNavigateToChatSearch = {
+                    navController.navigateToChatSearch()
+                },
+                onNavigateToChatRoom = {
+                    navController.navigateToChatRoom()
+                }
             )
         }
-        animateComposable(
-            route = ChatRoute.chatSearch()
-        ) {
+        animateComposable<ChatSearchRoute> {
             ChatSearchScreen(
-                onBack = onBack,
-                onNavigateToChatRoom = onNavigateToChatRoom
+                onBack = {
+                    navController.popBackStack()
+                },
+                onNavigateToChatRoom = {
+                    navController.navigateToChatRoom()
+                }
             )
         }
-        animateComposable(
-            route = ChatRoute.chatRoom()
-        ) {
+        animateComposable<ChatRoomRoute> {
             ChatRoomScreen(
-                onBack = onBack
+                onBack = {
+                    navController.popBackStack()
+                }
             )
         }
     }
-}
-
-object ChatRoute {
-    const val route = "chat"
-
-    fun chatList() = "$route/list"
-    fun chatSearch() = "$route/search"
-    fun chatRoom() = "$route/room"
 }

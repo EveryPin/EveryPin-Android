@@ -55,89 +55,89 @@ private fun MyContainer(
     onClickCheckPin: () -> Unit,
     onClickEditProfile: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .padding(
-                bottom = innerPadding.calculateBottomPadding()
-            )
-            .fillMaxSize()
+    Surface(
+        modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())
     ) {
-        CenterAlignedTopAppBar(
-            title = {
-                Text(
-                    text = "아이디",
-                    style = EveryPinTheme.typography.titleLarge
-                )
-            },
-            actions = {
-                IconButton(
-                    onClick = onClickSetting
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = "아이디",
+                        style = EveryPinTheme.typography.titleLarge
+                    )
+                },
+                actions = {
+                    IconButton(
+                        onClick = onClickSetting
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_setting),
+                            contentDescription = stringResource(
+                                id = R.string.setting
+                            )
+                        )
+                    }
+                }
+            )
+            UserProfile(
+                onClickFollower = onClickFollower,
+                onClickFollow = onClickFollow,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .fillMaxWidth(),
+                nickname = "닉네임",
+                intro = "자기소개",
+                pinCnt = 34,
+                followerCnt = 3244,
+                followCnt = 234242
+            )
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                ElevatedButton(
+                    onClick = onClickCheckPin,
+                    modifier = Modifier.weight(1f)
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_setting),
-                        contentDescription = stringResource(
-                            id = R.string.setting
-                        )
+                        painter = painterResource(id = R.drawable.ic_pin_drop),
+                        contentDescription = stringResource(id = R.string.check_pin)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = stringResource(id = R.string.check_pin)
+                    )
+                }
+                ElevatedButton(
+                    onClick = onClickEditProfile,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_manage_accounts),
+                        contentDescription = stringResource(id = R.string.edit_profile)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = stringResource(id = R.string.edit_profile)
                     )
                 }
             }
-        )
-        UserProfile(
-            onClickFollower = onClickFollower,
-            onClickFollow = onClickFollow,
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .fillMaxWidth(),
-            nickname = "닉네임",
-            intro = "자기소개",
-            pinCnt = 34,
-            followerCnt = 3244,
-            followCnt = 234242
-        )
-        Row(
-            modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 12.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            ElevatedButton(
-                onClick = onClickCheckPin,
-                modifier = Modifier.weight(1f)
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_pin_drop),
-                    contentDescription = stringResource(id = R.string.check_pin)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = stringResource(id = R.string.check_pin)
-                )
-            }
-            ElevatedButton(
-                onClick = onClickEditProfile,
-                modifier = Modifier.weight(1f)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_manage_accounts),
-                    contentDescription = stringResource(id = R.string.edit_profile)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = stringResource(id = R.string.edit_profile)
-                )
-            }
-        }
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            items(30) {
-                CommonAsyncImage(
-                    data = "https://picsum.photos/200",
-                    contentScale = ContentScale.Crop
-                )
+                items(30) {
+                    CommonAsyncImage(
+                        data = "https://picsum.photos/200",
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
         }
     }
