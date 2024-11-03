@@ -2,8 +2,8 @@ package everypin.app.feature.chat
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import everypin.app.core.ui.animation.animateComposable
 import everypin.app.feature.chat.view.ChatListScreen
 import everypin.app.feature.chat.view.ChatRoomScreen
 import everypin.app.feature.chat.view.ChatSearchScreen
@@ -37,7 +37,7 @@ fun NavGraphBuilder.chatGraph(navController: NavController) {
     navigation<ChatNavigation>(
         startDestination = ChatListRoute
     ) {
-        animateComposable<ChatListRoute> {
+        composable<ChatListRoute> {
             ChatListScreen(
                 onBack = {
                     navController.popBackStack()
@@ -50,7 +50,7 @@ fun NavGraphBuilder.chatGraph(navController: NavController) {
                 }
             )
         }
-        animateComposable<ChatSearchRoute> {
+        composable<ChatSearchRoute> {
             ChatSearchScreen(
                 onBack = {
                     navController.popBackStack()
@@ -60,7 +60,7 @@ fun NavGraphBuilder.chatGraph(navController: NavController) {
                 }
             )
         }
-        animateComposable<ChatRoomRoute> {
+        composable<ChatRoomRoute> {
             ChatRoomScreen(
                 onBack = {
                     navController.popBackStack()

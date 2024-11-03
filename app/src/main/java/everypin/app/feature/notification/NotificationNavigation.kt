@@ -2,7 +2,7 @@ package everypin.app.feature.notification
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import everypin.app.core.ui.animation.animateComposable
+import androidx.navigation.compose.composable
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -13,7 +13,7 @@ fun NavController.navigateToNotification() {
 }
 
 fun NavGraphBuilder.notificationGraph(navController: NavController) {
-    animateComposable<NotificationRoute> {
+    composable<NotificationRoute> {
         NotificationScreen(
             onBack = {
                 navController.popBackStack()

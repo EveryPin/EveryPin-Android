@@ -2,8 +2,8 @@ package everypin.app.feature.setting
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import everypin.app.core.ui.animation.animateComposable
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -20,7 +20,7 @@ fun NavGraphBuilder.settingGraph(navController: NavController) {
     navigation<SettingNavigation>(
         startDestination = SettingRoute
     ) {
-        animateComposable<SettingRoute> {
+        composable<SettingRoute> {
             SettingScreen(
                 onBack = {
                     navController.popBackStack()

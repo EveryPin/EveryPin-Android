@@ -15,7 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavDestination
@@ -35,14 +34,12 @@ import everypin.app.feature.post.postGraph
 import everypin.app.feature.setting.settingGraph
 import java.util.UUID
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun MainScreen(
     navController: NavHostController = rememberNavController()
 ) {
     val context = LocalContext.current
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination
-    val density = LocalDensity.current
 
     DisposableEffect(key1 = Unit) {
         val handler = object : GlobalNavigationHandler {
@@ -89,7 +86,11 @@ internal fun MainScreen(
         ) {
             NavHost(
                 navController = navController,
-                startDestination = HomeRoute
+                startDestination = HomeRoute,
+                enterTransition = { fadeIn() },
+                exitTransition = { fadeOut() },
+                popEnterTransition = { fadeIn() },
+                popExitTransition = { fadeOut() }
             ) {
                 topLevelGraph(
                     navController = navController,

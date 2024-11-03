@@ -10,7 +10,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import everypin.app.R
-import everypin.app.core.ui.animation.animateComposable
 import everypin.app.feature.addpin.AddPinScreen
 import everypin.app.feature.chat.navigateToChatList
 import everypin.app.feature.home.HomeScreen
@@ -89,7 +88,7 @@ fun NavGraphBuilder.topLevelGraph(navController: NavController, innerPadding: Pa
             }
         )
     }
-    animateComposable<AddPinRoute> {
+    composable<AddPinRoute> {
         AddPinScreen()
     }
     composable<MyRoute>(
