@@ -23,5 +23,7 @@ data class PostDetailDto(
     @Json(name = "x")
     val x: Double?,
     @Json(name = "y")
-    val y: Double?
+    val y: Double?,
+    @Json(name = "userId")
+    val userId: String?
 )

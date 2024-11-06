@@ -10,5 +10,6 @@ data class PostDetail(
     val latitude: Double,
     val longitude: Double,
     val photoUrls: List<String>,
-    val likeCount: Int
+    val likeCount: Int,
+    val userId: String
 )

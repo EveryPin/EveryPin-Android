@@ -79,7 +79,8 @@ class PostRepositoryImpl @Inject constructor(
                 latitude = data.y!!,
                 longitude = data.x!!,
                 photoUrls = data.postPhotos!!.map { it.photoUrl!! },
-                likeCount = data.likeCount ?: 0
+                likeCount = data.likeCount ?: 0,
+                userId = data.userId ?: "null"
             )
             emit(post)
         } else {

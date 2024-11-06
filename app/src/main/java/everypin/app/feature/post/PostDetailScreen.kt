@@ -472,7 +472,8 @@ private fun PostDetailScreenPreview() {
         latitude = 1.0,
         longitude = 1.0,
         photoUrls = listOf("", "", ""),
-        likeCount = 1234
+        likeCount = 1234,
+        userId = ""
     )
 
     EveryPinTheme {
