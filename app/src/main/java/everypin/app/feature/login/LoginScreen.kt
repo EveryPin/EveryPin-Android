@@ -30,7 +30,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import everypin.app.R
 import everypin.app.core.constant.ProviderType
@@ -80,7 +79,9 @@ internal fun LoginScreen(
     LaunchedEffect(signInState) {
         when (signInState) {
             is SignInState.Error -> {
-                signInErrorMsg = (signInState as SignInState.Error).message
+                val error = signInState as SignInState.Error
+                Logger.e(error.message, error.throwable)
+                signInErrorMsg = error.message
                 showSignInErrorDialog = true
             }
 

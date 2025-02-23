@@ -129,6 +129,8 @@ dependencies {
     implementation(libs.firebase.perf)
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.messaging)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.auth)
 
     implementation(libs.okHttp)
     implementation(libs.okHttp.logging)

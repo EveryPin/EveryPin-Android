@@ -1,6 +1,6 @@
 [versions]
-android-gradle-plugin = "8.7.2"
-activity-compose = "1.9.3"
+android-gradle-plugin = "8.8.0"
+activity-compose = "1.10.0"
 androidx-appcompat = "1.7.0"
 androidx-core = "1.15.0"
 androidx-core-splashScreen = "1.0.1"
@@ -9,27 +9,27 @@ androidx-espresso-core = "3.6.1"
 androidx-hilt = "1.2.0"
 androidx-junit = "1.2.1"
 androidx-lifecycle = "2.8.7"
-androidx-navigation = "2.8.3"
-androidx-compose-bom = "2024.10.01"
-androidx-paging = "3.3.2"
+androidx-navigation = "2.8.6"
+androidx-compose-bom = "2025.01.01"
+androidx-paging = "3.3.5"
 coil = "2.7.0"
-datastore = "1.1.1"
-firebase-bom = "33.5.1"
-firebase-crashlytics-plugin = "3.0.2"
+datastore = "1.1.2"
+firebase-bom = "33.9.0"
+firebase-crashlytics-plugin = "3.0.3"
 firebase-perf-plugin = "1.4.2"
 gms-plugin = "4.4.2"
 googleId = "1.1.1"
 hilt-android = "2.52"
 junit = "4.13.2"
-kotlin = "2.0.20"
+kotlin = "2.1.0"
 kotlinx-serialization = "1.7.3"
-ksp = "2.0.20-1.0.24"
+ksp = "2.0.21-1.0.28"
 moshi = "1.15.1"
 naverMapCompose = "1.7.3"
 okHttp = "4.12.0"
 playServicesLocation = "21.3.0"
 retrofit = "2.11.0"
-kakao = "2.20.5"
+kakao = "2.20.6"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
@@ -60,10 +60,12 @@ androidx-paging-runtimeKtx = { module = "androidx.paging:paging-runtime-ktx", ve
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "androidx-paging" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
-firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx" }
-firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx" }
-firebase-messaging = { module = "com.google.firebase:firebase-messaging-ktx" }
-firebase-perf = { module = "com.google.firebase:firebase-perf-ktx" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
+firebase-perf = { module = "com.google.firebase:firebase-perf" }
+firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
+firebase-auth = { module = "com.google.firebase:firebase-auth" }
 googleId = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleId" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt-android" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt-android" }

@@ -4,7 +4,7 @@ import dagger.Lazy
 import everypin.app.core.ui.navigation.GlobalNavigation
 import everypin.app.datastore.DataStorePreferences
 import everypin.app.datastore.PreferencesKey
-import everypin.app.network.api.TokenApi
+import everypin.app.network.api.AuthApi
 import everypin.app.network.model.auth.TokenRefreshRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -15,11 +15,11 @@ import javax.inject.Inject
 
 class AuthInterceptor @Inject constructor(
     private val lazyDataStorePreferences: Lazy<DataStorePreferences>,
-    private val lazyTokenApi: Lazy<TokenApi>
+    private val lazyAuthApi: Lazy<AuthApi>
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val prefs = lazyDataStorePreferences.get()
-        val tokenApi = lazyTokenApi.get()
+        val tokenApi = lazyAuthApi.get()
         val request = chain.request()
 
         val hasAuthorization = request.headers.names().contains("Authorization")

@@ -8,10 +8,8 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialCancellationException
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
-import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
@@ -103,7 +101,7 @@ class SocialSignInHelper(
                 throw Throwable("Unexpected type of credential")
             }
         } catch (e: GetCredentialCancellationException) {
-            Logger.i("구글 로그인 취소됨")
+            Logger.i("구글 로그인 취소됨", e)
         }
     }
 }
