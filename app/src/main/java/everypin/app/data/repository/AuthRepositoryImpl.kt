@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import everypin.app.core.constant.ProviderType
 import everypin.app.core.extension.toHttpError
+import everypin.app.core.utils.Logger
 import everypin.app.data.model.LoginRequest
 import everypin.app.datastore.DataStorePreferences
 import everypin.app.datastore.PreferencesKey
@@ -47,6 +48,20 @@ class AuthRepositoryImpl @Inject constructor(
         } else {
             throw resp.toHttpError()
         }
+    }.flowOn(Dispatchers.IO)
+
+    override fun logout(): Flow<Unit> = flow {
+        val resp = authApi.logout()
+        if (!resp.isSuccessful) {
+            val error = resp.toHttpError()
+            Logger.w("로그아웃 요청 실패", error)
+        }
+
+        dataStorePreferences.remove(PreferencesKey.ACCESS_TOKEN)
+        dataStorePreferences.remove(PreferencesKey.REFRESH_TOKEN)
+
+        firebaseAuth.signOut()
+        emit(Unit)
     }.flowOn(Dispatchers.IO)
 
     override fun createFirebaseUser(

@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
     fun login(providerType: ProviderType, accessToken: String, fcmToken: String): Flow<Unit>
+    fun logout(): Flow<Unit>
     fun createFirebaseUser(
         userId: String,
         name: String,
