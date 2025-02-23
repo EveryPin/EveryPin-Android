@@ -112,7 +112,7 @@ internal fun HomeScreen(
     val fusedLocationClient = remember {
         LocationServices.getFusedLocationProviderClient(context)
     }
-    val postListState by homeViewModel.postPinsState.collectAsStateWithLifecycle()
+    val pinsState by homeViewModel.pinsState.collectAsStateWithLifecycle()
     val cameraPositionState = rememberCameraPositionState()
     var currentLocationLatLng: LatLng? by remember {
         mutableStateOf(null)
@@ -223,7 +223,7 @@ internal fun HomeScreen(
                             targetLatLng.second,
                             targetLatLng.first
                         )
-                        homeViewModel.fetchRangePostList(
+                        homeViewModel.fetchPins(
                             currentLatLng.longitude,
                             currentLatLng.latitude,
                             range
@@ -242,7 +242,7 @@ internal fun HomeScreen(
                     )
                 }
 
-                postListState.forEach {
+                pinsState.forEach {
                     Marker(
                         state = rememberMarkerState(position = LatLng(it.lat, it.lng)),
                         onClick = { _ ->

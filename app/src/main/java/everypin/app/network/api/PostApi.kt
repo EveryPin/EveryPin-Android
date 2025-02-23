@@ -2,7 +2,6 @@ package everypin.app.network.api
 
 import everypin.app.network.constant.AUTHORIZATION_ACCESS_TOKEN
 import everypin.app.network.model.post.PostDetailDto
-import everypin.app.network.model.post.PostDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -29,12 +28,4 @@ interface PostApi {
     suspend fun getPost(
         @Path("postId") postId: Int
     ): Response<PostDetailDto>
-
-    @GET("/api/post/{x}/{y}/{range}")
-    @Headers(AUTHORIZATION_ACCESS_TOKEN)
-    suspend fun getRangePosts(
-        @Path("x") x: Double,
-        @Path("y") y: Double,
-        @Path("range") range: Double
-    ): Response<List<PostDto>>
 }

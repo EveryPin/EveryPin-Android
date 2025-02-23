@@ -8,6 +8,8 @@ import everypin.app.data.repository.AuthRepository
 import everypin.app.data.repository.AuthRepositoryImpl
 import everypin.app.data.repository.KakaoRepository
 import everypin.app.data.repository.KakaoRepositoryImpl
+import everypin.app.data.repository.MapRepository
+import everypin.app.data.repository.MapRepositoryImpl
 import everypin.app.data.repository.PostRepository
 import everypin.app.data.repository.PostRepositoryImpl
 
@@ -23,4 +25,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindKakaoRepository(kakaoRepositoryImpl: KakaoRepositoryImpl): KakaoRepository
+
+    @Binds
+    abstract fun bindMapRepository(mapRepositoryImpl: MapRepositoryImpl): MapRepository
 }

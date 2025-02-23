@@ -2,7 +2,6 @@ package everypin.app.data.repository
 
 import everypin.app.core.extension.toHttpError
 import everypin.app.data.model.PostDetail
-import everypin.app.data.model.PostPin
 import everypin.app.network.api.PostApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -20,27 +19,6 @@ import javax.inject.Inject
 class PostRepositoryImpl @Inject constructor(
     private val postApi: PostApi
 ) : PostRepository {
-    override fun getRangePostPins(lng: Double, lat: Double, range: Double): Flow<List<PostPin>> =
-        flow {
-            val resp = postApi.getRangePosts(lng, lat, range)
-            val data = resp.body()
-            if (resp.isSuccessful) {
-                val posts = data?.filter {
-                    it.postId != null && it.x != null && it.y != null && it.postPhotos != null
-                }?.map {
-                    PostPin(
-                        id = it.postId!!,
-                        lat = it.y!!,
-                        lng = it.x!!,
-                        imageUrl = it.postPhotos!!.first().photoUrl!!
-                    )
-                } ?: emptyList()
-                emit(posts)
-            } else {
-                throw resp.toHttpError()
-            }
-        }.flowOn(Dispatchers.IO)
-
     override fun writePost(
         content: String,
         lat: Double,
