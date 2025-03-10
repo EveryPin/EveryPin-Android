@@ -2,6 +2,7 @@ package everypin.app.network.api
 
 import everypin.app.network.constant.AUTHORIZATION_ACCESS_TOKEN
 import everypin.app.network.model.post.PostDetailDto
+import everypin.app.network.model.post.PostWriteResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -17,11 +18,11 @@ interface PostApi {
     @POST("/api/post")
     @Headers(AUTHORIZATION_ACCESS_TOKEN)
     suspend fun writePost(
-        @Part("PostContent") postContent: RequestBody,
+        @Part("postContent") postContent: RequestBody,
         @Part("X") x: RequestBody,
         @Part("Y") y: RequestBody,
         @Part files: List<MultipartBody.Part>
-    ): Response<Unit>
+    ): Response<PostWriteResponse>
 
     @GET("/api/post/{postId}")
     @Headers(AUTHORIZATION_ACCESS_TOKEN)

@@ -15,11 +15,11 @@ import retrofit2.Retrofit
 object ApiModule {
 
     @Provides
-    fun provideAuthenticationApi(@RetrofitModule.AuthRetrofit retrofit: Retrofit): AuthApi =
+    fun provideAuthenticationApi(@RetrofitModule.DefaultRetrofit retrofit: Retrofit): AuthApi =
         retrofit.create(AuthApi::class.java)
 
     @Provides
-    fun providePostApi(@RetrofitModule.DefaultRetrofit retrofit: Retrofit): PostApi =
+    fun providePostApi(@RetrofitModule.AuthRetrofit retrofit: Retrofit): PostApi =
         retrofit.create(PostApi::class.java)
 
     @Provides
@@ -27,6 +27,6 @@ object ApiModule {
         retrofit.create(KakaoApi::class.java)
 
     @Provides
-    fun provideMapApi(@RetrofitModule.DefaultRetrofit retrofit: Retrofit): MapApi =
+    fun provideMapApi(@RetrofitModule.AuthRetrofit retrofit: Retrofit): MapApi =
         retrofit.create(MapApi::class.java)
 }

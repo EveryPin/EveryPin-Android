@@ -1,6 +1,7 @@
 package everypin.app.data.repository
 
 import everypin.app.core.extension.toHttpError
+import everypin.app.core.utils.Logger
 import everypin.app.data.model.PostDetail
 import everypin.app.network.api.PostApi
 import kotlinx.coroutines.Dispatchers
@@ -32,10 +33,11 @@ class PostRepositoryImpl @Inject constructor(
             files = imagePaths.map {
                 val file = File(it)
                 val reqBody = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-                MultipartBody.Part.createFormData("PhotoFiles", file.name, reqBody)
+                MultipartBody.Part.createFormData("photoFiles", file.name, reqBody)
             }
         )
         if (resp.isSuccessful) {
+            Logger.d("게시글 생성됨. post: ${resp.body()}")
             emit(Unit)
         } else {
             throw resp.toHttpError()
