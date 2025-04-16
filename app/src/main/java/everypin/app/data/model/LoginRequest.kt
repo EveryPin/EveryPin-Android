@@ -1,14 +1,14 @@
 package everypin.app.data.model
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class LoginRequest(
-    @Json(name = "platformCode")
+    @SerialName(value = "platformCode")
     val platformCode: String,
-    @Json(name = "accessToken")
+    @SerialName(value = "accessToken")
     val accessToken: String,
-    @Json(name = "fcmToken")
+    @SerialName(value = "fcmToken")
     val fcmToken: String
 )

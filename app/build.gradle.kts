@@ -135,9 +135,7 @@ dependencies {
     implementation(libs.okHttp)
     implementation(libs.okHttp.logging)
     implementation(libs.retrofit)
-    implementation(libs.retrofit.converterMoshi)
-    implementation(libs.moshi.kotlin)
-    implementation(libs.moshi.kotlinCodegen)
+    implementation(libs.retrofit.converterKotlinxSerialization)
 
     implementation(libs.coil.compose)
 

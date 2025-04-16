@@ -1,62 +1,61 @@
 package everypin.app.network.model.kakao
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-
-@JsonClass(generateAdapter = true)
+@Serializable
 data class KakaoLocalSearchKeywordResponse(
-    @Json(name = "documents")
+    @SerialName(value = "documents")
     val documents: List<Document>?,
-    @Json(name = "meta")
+    @SerialName(value = "meta")
     val meta: Meta?
 ) {
-    @JsonClass(generateAdapter = true)
+    @Serializable
     data class Document(
-        @Json(name = "address_name")
+        @SerialName(value = "address_name")
         val addressName: String?,
-        @Json(name = "category_group_code")
+        @SerialName(value = "category_group_code")
         val categoryGroupCode: String?,
-        @Json(name = "category_group_name")
+        @SerialName(value = "category_group_name")
         val categoryGroupName: String?,
-        @Json(name = "category_name")
+        @SerialName(value = "category_name")
         val categoryName: String?,
-        @Json(name = "distance")
+        @SerialName(value = "distance")
         val distance: String?,
-        @Json(name = "id")
+        @SerialName(value = "id")
         val id: String?,
-        @Json(name = "phone")
+        @SerialName(value = "phone")
         val phone: String?,
-        @Json(name = "place_name")
+        @SerialName(value = "place_name")
         val placeName: String?,
-        @Json(name = "place_url")
+        @SerialName(value = "place_url")
         val placeUrl: String?,
-        @Json(name = "road_address_name")
+        @SerialName(value = "road_address_name")
         val roadAddressName: String?,
-        @Json(name = "x")
+        @SerialName(value = "x")
         val x: String?,
-        @Json(name = "y")
+        @SerialName(value = "y")
         val y: String?
     )
 
-    @JsonClass(generateAdapter = true)
+    @Serializable
     data class Meta(
-        @Json(name = "is_end")
+        @SerialName(value = "is_end")
         val isEnd: Boolean?,
-        @Json(name = "pageable_count")
+        @SerialName(value = "pageable_count")
         val pageableCount: Int?,
-        @Json(name = "same_name")
+        @SerialName(value = "same_name")
         val sameName: SameName?,
-        @Json(name = "total_count")
+        @SerialName(value = "total_count")
         val totalCount: Int?
     ) {
-        @JsonClass(generateAdapter = true)
+        @Serializable
         data class SameName(
-            @Json(name = "keyword")
+            @SerialName(value = "keyword")
             val keyword: String?,
-            @Json(name = "region")
+            @SerialName(value = "region")
             val region: List<String>?,
-            @Json(name = "selected_region")
+            @SerialName(value = "selected_region")
             val selectedRegion: String?
         )
     }

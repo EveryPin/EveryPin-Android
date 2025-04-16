@@ -1,16 +1,18 @@
 package everypin.app.network.di
 
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import everypin.app.BuildConfig
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import retrofit2.Converter
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import javax.inject.Qualifier
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -29,41 +31,40 @@ object RetrofitModule {
     annotation class KakaoRetrofit
 
     @Provides
-    fun provideMoshiConverterFactory(): MoshiConverterFactory =
-        MoshiConverterFactory.create(Moshi.Builder().apply {
-            addLast(KotlinJsonAdapterFactory())
-        }.build())
+    @Singleton
+    fun provideKotlinxSerializationConverterFactory() =
+        Json.asConverterFactory("application/json; charset=UTF-8".toMediaType())
 
     @Provides
     @DefaultRetrofit
     fun provideDefaultRetrofit(
-        moshiConverterFactory: MoshiConverterFactory,
+        serializationConverterFactory: Converter.Factory,
         @OkHttpClientModule.DefaultOkHttpClient okHttpClient: OkHttpClient
     ): Retrofit = Retrofit.Builder().apply {
         baseUrl(BuildConfig.BASE_URL)
-        addConverterFactory(moshiConverterFactory)
+        addConverterFactory(serializationConverterFactory)
         client(okHttpClient)
     }.build()
 
     @Provides
     @AuthRetrofit
     fun provideAuthRetrofit(
-        moshiConverterFactory: MoshiConverterFactory,
+        serializationConverterFactory: Converter.Factory,
         @OkHttpClientModule.AuthOkHttpClient okHttpClient: OkHttpClient
     ): Retrofit = Retrofit.Builder().apply {
         baseUrl(BuildConfig.BASE_URL)
-        addConverterFactory(moshiConverterFactory)
+        addConverterFactory(serializationConverterFactory)
         client(okHttpClient)
     }.build()
 
     @Provides
     @KakaoRetrofit
     fun provideKakaoRetrofit(
-        moshiConverterFactory: MoshiConverterFactory,
+        serializationConverterFactory: Converter.Factory,
         @OkHttpClientModule.KakaoOkHttpClient okHttpClient: OkHttpClient
     ): Retrofit = Retrofit.Builder().apply {
         baseUrl("https://dapi.kakao.com")
-        addConverterFactory(moshiConverterFactory)
+        addConverterFactory(serializationConverterFactory)
         client(okHttpClient)
     }.build()
 }

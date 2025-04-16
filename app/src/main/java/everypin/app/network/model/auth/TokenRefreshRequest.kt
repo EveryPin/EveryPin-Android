@@ -1,12 +1,12 @@
 package everypin.app.network.model.auth
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class TokenRefreshRequest(
-    @Json(name = "accessToken")
+    @SerialName(value = "accessToken")
     val accessToken: String?,
-    @Json(name = "refreshToken")
+    @SerialName(value = "refreshToken")
     val refreshToken: String?
 )

@@ -1,23 +1,22 @@
 package everypin.app.network.model.post
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
-
-@JsonClass(generateAdapter = true)
+@Serializable
 data class PostDto(
-    @Json(name = "createdDate")
+    @SerialName(value = "createdDate")
     val createdDate: String?,
-    @Json(name = "postContent")
+    @SerialName(value = "postContent")
     val postContent: String?,
-    @Json(name = "postId")
+    @SerialName(value = "postId")
     val postId: Int?,
-    @Json(name = "postPhotos")
+    @SerialName(value = "postPhotos")
     val postPhotos: List<PostPhotoDto>?,
-    @Json(name = "updateDate")
-    val updateDate: Any?,
-    @Json(name = "x")
+    @SerialName(value = "updateDate")
+    val updateDate: String?,
+    @SerialName(value = "x")
     val x: Double?,
-    @Json(name = "y")
+    @SerialName(value = "y")
     val y: Double?
 )
