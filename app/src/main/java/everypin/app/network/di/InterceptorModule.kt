@@ -8,12 +8,14 @@ import dagger.hilt.components.SingletonComponent
 import everypin.app.datastore.DataStorePreferences
 import everypin.app.network.api.AuthApi
 import everypin.app.network.interceptor.AuthInterceptor
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object InterceptorModule {
 
     @Provides
+    @Singleton
     fun provideAuthInterceptor(
         lazyDataStorePreferences: Lazy<DataStorePreferences>,
         lazyAuthApi: Lazy<AuthApi>

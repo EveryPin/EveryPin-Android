@@ -1,5 +1,6 @@
 package everypin.app.network.api
 
+import everypin.app.network.cache.Cacheable
 import everypin.app.network.constant.AUTHORIZATION_ACCESS_TOKEN
 import everypin.app.network.model.post.PostDetailDto
 import everypin.app.network.model.post.PostWriteResponse
@@ -12,6 +13,7 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
+import java.util.concurrent.TimeUnit
 
 interface PostApi {
     @Multipart
@@ -26,6 +28,7 @@ interface PostApi {
 
     @GET("/api/post/{postId}")
     @Headers(AUTHORIZATION_ACCESS_TOKEN)
+    @Cacheable(15, TimeUnit.MINUTES)
     suspend fun getPost(
         @Path("postId") postId: Int
     ): Response<PostDetailDto>

@@ -1,12 +1,15 @@
 package everypin.app.network.api
 
+import everypin.app.network.cache.Cacheable
 import everypin.app.network.model.kakao.KakaoLocalSearchKeywordResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
+import java.util.concurrent.TimeUnit
 
 interface KakaoApi {
     @GET("/v2/local/search/keyword.json")
+    @Cacheable(1, TimeUnit.DAYS)
     suspend fun localSearchKeyword(
         @Query("query") query: String,
         @Query("category_group_code") categoryGroupCode: String? = null,

@@ -36,6 +36,7 @@ object RetrofitModule {
         Json.asConverterFactory("application/json; charset=UTF-8".toMediaType())
 
     @Provides
+    @Singleton
     @DefaultRetrofit
     fun provideDefaultRetrofit(
         serializationConverterFactory: Converter.Factory,
@@ -47,6 +48,7 @@ object RetrofitModule {
     }.build()
 
     @Provides
+    @Singleton
     @AuthRetrofit
     fun provideAuthRetrofit(
         serializationConverterFactory: Converter.Factory,
@@ -58,6 +60,7 @@ object RetrofitModule {
     }.build()
 
     @Provides
+    @Singleton
     @KakaoRetrofit
     fun provideKakaoRetrofit(
         serializationConverterFactory: Converter.Factory,
