@@ -5,57 +5,57 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class KakaoLocalSearchKeywordResponse(
-    @SerialName(value = "documents")
+    @SerialName("documents")
     val documents: List<Document>?,
-    @SerialName(value = "meta")
+    @SerialName("meta")
     val meta: Meta?
 ) {
     @Serializable
     data class Document(
-        @SerialName(value = "address_name")
+        @SerialName("address_name")
         val addressName: String?,
-        @SerialName(value = "category_group_code")
+        @SerialName("category_group_code")
         val categoryGroupCode: String?,
-        @SerialName(value = "category_group_name")
+        @SerialName("category_group_name")
         val categoryGroupName: String?,
-        @SerialName(value = "category_name")
+        @SerialName("category_name")
         val categoryName: String?,
-        @SerialName(value = "distance")
+        @SerialName("distance")
         val distance: String?,
-        @SerialName(value = "id")
+        @SerialName("id")
         val id: String?,
-        @SerialName(value = "phone")
+        @SerialName("phone")
         val phone: String?,
-        @SerialName(value = "place_name")
+        @SerialName("place_name")
         val placeName: String?,
-        @SerialName(value = "place_url")
+        @SerialName("place_url")
         val placeUrl: String?,
-        @SerialName(value = "road_address_name")
+        @SerialName("road_address_name")
         val roadAddressName: String?,
-        @SerialName(value = "x")
+        @SerialName("x")
         val x: String?,
-        @SerialName(value = "y")
+        @SerialName("y")
         val y: String?
     )
 
     @Serializable
     data class Meta(
-        @SerialName(value = "is_end")
+        @SerialName("is_end")
         val isEnd: Boolean?,
-        @SerialName(value = "pageable_count")
+        @SerialName("pageable_count")
         val pageableCount: Int?,
-        @SerialName(value = "same_name")
+        @SerialName("same_name")
         val sameName: SameName?,
-        @SerialName(value = "total_count")
+        @SerialName("total_count")
         val totalCount: Int?
     ) {
         @Serializable
         data class SameName(
-            @SerialName(value = "keyword")
+            @SerialName("keyword")
             val keyword: String?,
-            @SerialName(value = "region")
+            @SerialName("region")
             val region: List<String>?,
-            @SerialName(value = "selected_region")
+            @SerialName("selected_region")
             val selectedRegion: String?
         )
     }

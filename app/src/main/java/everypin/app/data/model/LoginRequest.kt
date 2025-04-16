@@ -5,10 +5,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class LoginRequest(
-    @SerialName(value = "platformCode")
+    @SerialName("platformCode")
     val platformCode: String,
-    @SerialName(value = "accessToken")
+    @SerialName("accessToken")
     val accessToken: String,
-    @SerialName(value = "fcmToken")
+    @SerialName("fcmToken")
     val fcmToken: String
 )
