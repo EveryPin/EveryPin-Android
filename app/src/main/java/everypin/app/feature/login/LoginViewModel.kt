@@ -11,17 +11,17 @@ import everypin.app.data.repository.AuthRepository
 import everypin.app.datastore.DataStorePreferences
 import everypin.app.datastore.PreferencesKey
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,8 +31,8 @@ class LoginViewModel @Inject constructor(
     private val dataStorePreferences: DataStorePreferences,
     private val messaging: FirebaseMessaging
 ) : ViewModel() {
-    private val _authStatusEvent = MutableSharedFlow<AuthStatusEvent>()
-    val authStatusEvent = _authStatusEvent.asSharedFlow()
+    private val _authStatusEvent = Channel<AuthStatusEvent>(Channel.BUFFERED)
+    val authStatusEvent = _authStatusEvent.receiveAsFlow()
 
     private var _shouldShowSplash = true
     val shouldShowSplash get() = _shouldShowSplash
@@ -53,7 +53,7 @@ class LoginViewModel @Inject constructor(
                     AuthStatusEvent.NOT_AUTHENTICATED
                 }
             }.collectLatest {
-                _authStatusEvent.emit(it)
+                _authStatusEvent.send(it)
                 _shouldShowSplash = false
             }
         }

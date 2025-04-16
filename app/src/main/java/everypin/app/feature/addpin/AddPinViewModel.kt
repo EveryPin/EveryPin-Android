@@ -8,12 +8,12 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import everypin.app.core.utils.Logger
 import everypin.app.data.repository.PostRepository
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,8 +28,8 @@ class AddPinViewModel @Inject constructor(
     private val _pinState = MutableStateFlow<PinInfo?>(null)
     val pinState get() = _pinState.asStateFlow()
 
-    private val _regPinEvent = MutableSharedFlow<RegPinEvent>()
-    val regPinEvent get() = _regPinEvent.asSharedFlow()
+    private val _regPinEvent = Channel<RegPinEvent>(Channel.BUFFERED)
+    val regPinEvent get() = _regPinEvent.receiveAsFlow()
 
     private var _isLoading = mutableStateOf(false)
     val isLoading get() = _isLoading.value
@@ -56,15 +56,15 @@ class AddPinViewModel @Inject constructor(
 
             when {
                 selectedImageListState.value.isEmpty() -> {
-                    _regPinEvent.emit(RegPinEvent.EmptyImage)
+                    _regPinEvent.send(RegPinEvent.EmptyImage)
                 }
 
                 pinState == null -> {
-                    _regPinEvent.emit(RegPinEvent.EmptyAddress)
+                    _regPinEvent.send(RegPinEvent.EmptyAddress)
                 }
 
                 content.isEmpty() -> {
-                    _regPinEvent.emit(RegPinEvent.EmptyContent)
+                    _regPinEvent.send(RegPinEvent.EmptyContent)
                 }
 
                 else -> {
@@ -78,11 +78,11 @@ class AddPinViewModel @Inject constructor(
                     ).catch {
                         Logger.e("핀 등록 실패", it)
                         _isLoading.value = false
-                        _regPinEvent.emit(RegPinEvent.Error(it))
+                        _regPinEvent.send(RegPinEvent.Error(it))
                     }.collectLatest {
                         Logger.i("핀 등록 성공")
                         _isLoading.value = false
-                        _regPinEvent.emit(RegPinEvent.Success)
+                        _regPinEvent.send(RegPinEvent.Success)
                     }
                 }
             }

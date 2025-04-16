@@ -26,7 +26,6 @@ import everypin.app.core.ui.component.button.ListItemButton
 import everypin.app.core.ui.theme.EveryPinTheme
 import everypin.app.core.utils.RepeatOnStartedEffect
 import everypin.app.feature.login.LoginActivity
-import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 internal fun SettingScreen(
@@ -36,7 +35,7 @@ internal fun SettingScreen(
     val context = LocalContext.current
 
     RepeatOnStartedEffect {
-        settingViewModel.settingEvent.collectLatest { event ->
+        settingViewModel.settingEvent.collect { event ->
             when(event) {
                 SettingEvent.LogoutSuccess -> {
                     LoginActivity.startActivityWithClearAllTasks(context)

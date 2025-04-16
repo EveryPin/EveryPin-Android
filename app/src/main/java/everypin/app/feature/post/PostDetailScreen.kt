@@ -68,6 +68,7 @@ import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import everypin.app.R
 import everypin.app.core.error.HttpError
@@ -154,7 +155,7 @@ private fun PostDetailContainer(
                                     indication = null,
                                     interactionSource = remember { MutableInteractionSource() },
                                     onClick = {
-                                        val uri = Uri.parse("geo:0,0?q=${Uri.encode(address)}")
+                                        val uri = "geo:0,0?q=${Uri.encode(address)}".toUri()
                                         val intent = Intent(Intent.ACTION_VIEW, uri)
                                         context.startActivity(intent)
                                     }

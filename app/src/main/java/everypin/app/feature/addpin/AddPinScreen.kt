@@ -113,7 +113,7 @@ internal fun AddPinScreen(
         }
 
     LaunchedEffect(key1 = Unit) {
-        addPinViewModel.regPinEvent.collectLatest { event ->
+        addPinViewModel.regPinEvent.collect { event ->
             when (event) {
                 is RegPinEvent.Error -> {
                     regPinErrorMessage =
