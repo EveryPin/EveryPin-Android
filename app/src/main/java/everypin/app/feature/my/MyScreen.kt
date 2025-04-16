@@ -1,5 +1,6 @@
 package everypin.app.feature.my
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,24 +20,55 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import everypin.app.R
 import everypin.app.core.ui.component.CommonAsyncImage
 import everypin.app.core.ui.component.UserProfile
 import everypin.app.core.ui.theme.EveryPinTheme
+import everypin.app.data.model.Profile
 
 @Composable
 internal fun MyScreen(
+    myViewModel: MyViewModel = hiltViewModel(),
     innerPadding: PaddingValues,
     onNavigateToSetting: () -> Unit
 ) {
+    val profileState = myViewModel.profileState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        if (profileState.value == null) {
+            myViewModel.getProfileMe()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        myViewModel.myEvent.collect { event ->
+            when (event) {
+                is MyEvent.ProfileLoadError -> {
+                    Toast.makeText(
+                        context,
+                        ContextCompat.getString(context, R.string.profile_load_error_message),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
+
     MyContainer(
         innerPadding = innerPadding,
+        profile = profileState.value,
         onClickSetting = onNavigateToSetting,
         onClickFollower = {},
         onClickFollow = {},
@@ -49,6 +81,7 @@ internal fun MyScreen(
 @Composable
 private fun MyContainer(
     innerPadding: PaddingValues,
+    profile: Profile?,
     onClickSetting: () -> Unit,
     onClickFollower: () -> Unit,
     onClickFollow: () -> Unit,
@@ -64,7 +97,7 @@ private fun MyContainer(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "아이디",
+                        text = profile?.displayId ?: "",
                         style = EveryPinTheme.typography.titleLarge
                     )
                 },
@@ -87,8 +120,9 @@ private fun MyContainer(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .fillMaxWidth(),
-                nickname = "닉네임",
-                intro = "자기소개",
+                nickname = profile?.name ?: "",
+                intro = profile?.selfIntroduction ?: "",
+                profileImageUrl = profile?.photoUrl,
                 pinCnt = 34,
                 followerCnt = 3244,
                 followCnt = 234242
@@ -150,6 +184,13 @@ private fun MyScreenPreview() {
         Surface {
             MyContainer(
                 innerPadding = PaddingValues(),
+                profile = Profile(
+                    id = "1",
+                    displayId = "displayId",
+                    name = "name",
+                    photoUrl = null,
+                    selfIntroduction = "selfIntroduction"
+                ),
                 onClickSetting = {},
                 onClickFollower = {},
                 onClickFollow = {},

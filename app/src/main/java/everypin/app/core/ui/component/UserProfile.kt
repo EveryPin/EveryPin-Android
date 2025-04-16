@@ -31,6 +31,7 @@ fun UserProfile(
     modifier: Modifier = Modifier,
     nickname: String,
     intro: String,
+    profileImageUrl: String?,
     pinCnt: Int,
     followerCnt: Int,
     followCnt: Int
@@ -43,7 +44,7 @@ fun UserProfile(
         verticalAlignment = Alignment.CenterVertically
     ) {
         CommonAsyncImage(
-            data = "https://picsum.photos/200",
+            data = profileImageUrl,
             placeholder = painterResource(id = R.drawable.ic_face),
             modifier = Modifier
                 .size(100.dp)

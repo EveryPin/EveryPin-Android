@@ -1,13 +1,15 @@
 package everypin.app.core.utils
 
 import android.util.Log
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.ktx.Firebase
 import everypin.app.BuildConfig
-import everypin.app.EveryPinApplication
 
 object Logger {
     private const val TAG = "EveryPinLogger"
 
     fun e(message: String, throwable: Throwable? = null) {
+        throwable?.let(Firebase.crashlytics::recordException)
         if (BuildConfig.DEBUG) {
             Log.e(TAG, buildLogMessage(message), throwable)
         }

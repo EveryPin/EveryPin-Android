@@ -12,6 +12,8 @@ import everypin.app.data.repository.MapRepository
 import everypin.app.data.repository.MapRepositoryImpl
 import everypin.app.data.repository.PostRepository
 import everypin.app.data.repository.PostRepositoryImpl
+import everypin.app.data.repository.ProfileRepository
+import everypin.app.data.repository.ProfileRepositoryImpl
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -28,4 +30,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun bindMapRepository(mapRepositoryImpl: MapRepositoryImpl): MapRepository
+
+    @Binds
+    abstract fun bindProfileRepository(profileRepositoryImpl: ProfileRepositoryImpl): ProfileRepository
 }
