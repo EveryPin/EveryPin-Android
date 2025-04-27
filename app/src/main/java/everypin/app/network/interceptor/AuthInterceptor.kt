@@ -1,7 +1,7 @@
 package everypin.app.network.interceptor
 
 import dagger.Lazy
-import everypin.app.core.ui.navigation.GlobalNavigation
+import everypin.app.core.event.AuthEventBus
 import everypin.app.datastore.DataStorePreferences
 import everypin.app.datastore.PreferencesKey
 import everypin.app.network.api.AuthApi
@@ -15,7 +15,8 @@ import javax.inject.Inject
 
 class AuthInterceptor @Inject constructor(
     private val lazyDataStorePreferences: Lazy<DataStorePreferences>,
-    private val lazyAuthApi: Lazy<AuthApi>
+    private val lazyAuthApi: Lazy<AuthApi>,
+    private val authEventBus: AuthEventBus
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val prefs = lazyDataStorePreferences.get()
@@ -49,7 +50,7 @@ class AuthInterceptor @Inject constructor(
                 } else {
                     prefs.remove(PreferencesKey.ACCESS_TOKEN)
                     prefs.remove(PreferencesKey.REFRESH_TOKEN)
-                    GlobalNavigation.navigateToSignIn()
+                    authEventBus.notifyAuthExpired()
                     response
                 }
             }

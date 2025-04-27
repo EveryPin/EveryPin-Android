@@ -16,7 +16,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,25 +23,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import everypin.app.R
 import everypin.app.core.ui.component.button.ListItemButton
 import everypin.app.core.ui.theme.EveryPinTheme
-import everypin.app.core.utils.RepeatOnStartedEffect
-import everypin.app.feature.login.LoginActivity
 
 @Composable
 internal fun SettingScreen(
     settingViewModel: SettingViewModel = hiltViewModel(),
     onBack: () -> Unit
 ) {
-    val context = LocalContext.current
-
-    RepeatOnStartedEffect {
-        settingViewModel.settingEvent.collect { event ->
-            when(event) {
-                SettingEvent.LogoutSuccess -> {
-                    LoginActivity.startActivityWithClearAllTasks(context)
-                }
-            }
-        }
-    }
 
     SettingContainer(
         onBack = onBack,

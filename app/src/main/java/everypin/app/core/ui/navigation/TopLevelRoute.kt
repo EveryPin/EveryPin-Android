@@ -1,4 +1,4 @@
-package everypin.app.feature.main
+package everypin.app.core.ui.navigation
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -68,7 +68,11 @@ fun NavController.navigateToMy(navOptions: NavOptions) {
     navigate(MyRoute, navOptions)
 }
 
-fun NavGraphBuilder.topLevelGraph(navController: NavController, innerPadding: PaddingValues) {
+fun NavGraphBuilder.topLevelGraph(
+    navController: NavController,
+    innerPadding: PaddingValues,
+    onShowSnackbar: suspend (String, String?) -> Unit
+) {
     composable<HomeRoute>(
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None },
@@ -89,7 +93,9 @@ fun NavGraphBuilder.topLevelGraph(navController: NavController, innerPadding: Pa
         )
     }
     composable<AddPinRoute> {
-        AddPinScreen()
+        AddPinScreen(
+            onShowSnackbar = onShowSnackbar
+        )
     }
     composable<MyRoute>(
         enterTransition = { EnterTransition.None },
@@ -99,6 +105,7 @@ fun NavGraphBuilder.topLevelGraph(navController: NavController, innerPadding: Pa
     ) {
         MyScreen(
             innerPadding = innerPadding,
+            onShowSnackbar = onShowSnackbar,
             onNavigateToSetting = {
                 navController.navigateToSetting()
             }

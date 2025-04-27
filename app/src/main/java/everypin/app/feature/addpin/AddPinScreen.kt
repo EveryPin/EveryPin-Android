@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.provider.MediaStore
-import android.widget.Toast
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -49,6 +48,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -81,14 +81,15 @@ import everypin.app.core.utils.FileUtil
 import everypin.app.core.utils.Logger
 import everypin.app.data.model.PlaceInfo
 import everypin.app.feature.search.SearchPlaceActivity
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.io.File
 import java.util.UUID
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 internal fun AddPinScreen(
-    addPinViewModel: AddPinViewModel = hiltViewModel()
+    addPinViewModel: AddPinViewModel = hiltViewModel(),
+    onShowSnackbar: suspend (String, String?) -> Unit
 ) {
     val context = LocalContext.current
     val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
@@ -231,7 +232,8 @@ internal fun AddPinScreen(
             onClickAddressSearch = {
                 searchPlaceLauncher.launch(Intent(context, SearchPlaceActivity::class.java))
             },
-            pinAddress = pinState?.address ?: ""
+            pinAddress = pinState?.address ?: "",
+            onShowSnackbar = onShowSnackbar
         )
         if (addPinViewModel.isLoading) {
             Box(
@@ -255,9 +257,11 @@ private fun AddPinContainer(
     onSelectedImages: (image: List<Uri>) -> Unit,
     selectedImageList: List<Uri>,
     onClickAddressSearch: () -> Unit,
-    pinAddress: String
+    pinAddress: String,
+    onShowSnackbar: suspend (String, String?) -> Unit
 ) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     var showPermissionGuideDialog by remember { mutableStateOf(false) }
     val pickMultipleMedia = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickMultipleVisualMedia()
@@ -274,7 +278,9 @@ private fun AddPinContainer(
                 onSelectedImages(listOf(pickImageFile.toUri()))
             } catch (e: Exception) {
                 e.message?.let {
-                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                    scope.launch {
+                        onShowSnackbar(it, null)
+                    }
                 }
                 Logger.e(e.message.toString(), e)
             } finally {
@@ -521,7 +527,8 @@ private fun AddPinScreenPreview() {
             onSelectedImages = {},
             selectedImageList = emptyList(),
             onClickAddressSearch = {},
-            pinAddress = "서울특별시 중구 세종대로 110"
+            pinAddress = "서울특별시 중구 세종대로 110",
+            onShowSnackbar = { _, _ -> }
         )
     }
 }

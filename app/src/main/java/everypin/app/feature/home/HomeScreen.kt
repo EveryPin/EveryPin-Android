@@ -56,7 +56,7 @@ import everypin.app.core.extension.findActivity
 import everypin.app.core.extension.showSnackBarForPermissionSetting
 import everypin.app.core.ui.theme.EveryPinTheme
 import everypin.app.core.utils.CommonUtil
-import everypin.app.feature.main.HomeTopAppBar
+import everypin.app.core.ui.HomeTopAppBar
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalNaverMapApi::class)

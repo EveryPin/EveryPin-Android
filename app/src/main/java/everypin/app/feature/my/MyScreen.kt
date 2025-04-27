@@ -1,6 +1,5 @@
 package everypin.app.feature.my
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -41,6 +40,7 @@ import everypin.app.data.model.Profile
 internal fun MyScreen(
     myViewModel: MyViewModel = hiltViewModel(),
     innerPadding: PaddingValues,
+    onShowSnackbar: suspend (String, String?) -> Unit,
     onNavigateToSetting: () -> Unit
 ) {
     val profileState = myViewModel.profileState.collectAsStateWithLifecycle()
@@ -56,11 +56,12 @@ internal fun MyScreen(
         myViewModel.myEvent.collect { event ->
             when (event) {
                 is MyEvent.ProfileLoadError -> {
-                    Toast.makeText(
-                        context,
-                        ContextCompat.getString(context, R.string.profile_load_error_message),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    onShowSnackbar(
+                        ContextCompat.getString(
+                            context,
+                            R.string.profile_load_error_message
+                        ), null
+                    )
                 }
             }
         }
