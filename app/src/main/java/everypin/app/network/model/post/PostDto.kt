@@ -8,15 +8,21 @@ data class PostDto(
     @SerialName("createdDate")
     val createdDate: String?,
     @SerialName("postContent")
-    val postContent: String?,
+    val postContent: String,
     @SerialName("postId")
-    val postId: Int?,
+    val postId: Int,
     @SerialName("postPhotos")
-    val postPhotos: List<PostPhotoDto>?,
+    val postPhotos: List<PostPhotoDto>,
     @SerialName("updateDate")
     val updateDate: String?,
     @SerialName("x")
-    val x: Double?,
+    val x: Double,
     @SerialName("y")
-    val y: Double?
+    val y: Double,
+    @SerialName("userId")
+    val userId: String,
+    @SerialName("likeCount")
+    val likeCount: Int,
+    @SerialName("writer")
+    val writer: WriterDto?
 )

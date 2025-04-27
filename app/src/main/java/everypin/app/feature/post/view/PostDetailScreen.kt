@@ -1,9 +1,7 @@
-package everypin.app.feature.post
+package everypin.app.feature.post.view
 
 import android.content.Intent
-import android.location.Geocoder
 import android.net.Uri
-import android.os.Build
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -69,72 +67,23 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import everypin.app.R
 import everypin.app.core.error.HttpError
 import everypin.app.core.ui.component.CommonAsyncImage
 import everypin.app.core.ui.component.dialog.MenuAlertDialog
-import everypin.app.core.ui.state.UIState
 import everypin.app.core.ui.theme.EveryPinTheme
-import everypin.app.core.utils.Logger
 import everypin.app.data.model.PostDetail
+import everypin.app.feature.post.state.PostDetailState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
-import java.util.Locale
-
-@Composable
-fun PostDetailScreen(
-    postDetailViewModel: PostDetailViewModel,
-    onBack: () -> Unit
-) {
-    val postDetailState by postDetailViewModel.postDetailState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
-    val geocoder = remember {
-        Geocoder(context, Locale.getDefault())
-    }
-    var address by remember { mutableStateOf("") }
-
-    LaunchedEffect(postDetailState) {
-        if (postDetailState is UIState.Success) {
-            val postDetail = (postDetailState as UIState.Success).data
-
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    geocoder.getFromLocation(
-                        postDetail.latitude,
-                        postDetail.longitude,
-                        1
-                    ) {
-                        address = it.firstOrNull()?.getAddressLine(0) ?: ""
-                    }
-                } else {
-                    address = geocoder.getFromLocation(
-                        postDetail.latitude,
-                        postDetail.longitude,
-                        1
-                    )?.firstOrNull()?.getAddressLine(0) ?: ""
-                }
-            } catch (e: Exception) {
-                Logger.e("주소를 가져올 수 없음", e)
-            }
-        }
-    }
-
-    PostDetailContainer(
-        onBack = onBack,
-        postDetailState = postDetailState,
-        address = address
-    )
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun PostDetailContainer(
+fun PostDetailScreen(
     onBack: () -> Unit,
-    postDetailState: UIState<PostDetail>,
-    address: String
+    uiState: PostDetailState
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -143,19 +92,19 @@ private fun PostDetailContainer(
         topBar = {
             TopAppBar(
                 title = {
-                    if (postDetailState is UIState.Success) {
+                    if (uiState is PostDetailState.Success) {
                         Column {
                             Text(
-                                text = postDetailState.data.name,
+                                text = uiState.postDetail.profileDisplayId,
                                 style = MaterialTheme.typography.titleSmall
                             )
                             Text(
-                                text = address,
+                                text = uiState.address,
                                 modifier = Modifier.clickable(
                                     indication = null,
                                     interactionSource = remember { MutableInteractionSource() },
                                     onClick = {
-                                        val uri = "geo:0,0?q=${Uri.encode(address)}".toUri()
+                                        val uri = "geo:0,0?q=${Uri.encode(uiState.address)}".toUri()
                                         val intent = Intent(Intent.ACTION_VIEW, uri)
                                         context.startActivity(intent)
                                     }
@@ -177,12 +126,12 @@ private fun PostDetailContainer(
         }
     ) { innerPadding ->
         AnimatedContent(
-            targetState = postDetailState,
+            targetState = uiState,
             modifier = Modifier.padding(innerPadding),
             label = "postDetailStateAnim"
         ) { state ->
             when (state) {
-                is UIState.Error -> {
+                is PostDetailState.Error -> {
                     val error = state.error
                     val errMsg = if (error is HttpError && error.code == 404) {
                         stringResource(R.string.post_not_found_message)
@@ -203,7 +152,7 @@ private fun PostDetailContainer(
                     }
                 }
 
-                UIState.Loading -> {
+                PostDetailState.Loading -> {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -212,10 +161,10 @@ private fun PostDetailContainer(
                     }
                 }
 
-                is UIState.Success -> {
+                is PostDetailState.Success -> {
                     val pagerState = rememberPagerState(
                         initialPage = 0,
-                        pageCount = state.data.photoUrls::size
+                        pageCount = state.postDetail.photoUrls::size
                     )
                     var showMoreMenu by remember { mutableStateOf(false) }
 
@@ -240,7 +189,7 @@ private fun PostDetailContainer(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         NetworkImageHorizontalPager(
-                            urls = state.data.photoUrls,
+                            urls = state.postDetail.photoUrls,
                             state = pagerState,
                             onClickIndicator = {
                                 scope.launch {
@@ -266,7 +215,10 @@ private fun PostDetailContainer(
                             verticalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             Text(
-                                text = stringResource(R.string.like_count, state.data.likeCount),
+                                text = stringResource(
+                                    R.string.like_count,
+                                    state.postDetail.likeCount
+                                ),
                                 style = MaterialTheme.typography.titleMedium
                             )
                             Text(
@@ -275,11 +227,11 @@ private fun PostDetailContainer(
                                         // TODO: 작성자 프로필로 이동
                                     }) {
                                         withStyle(SpanStyle(fontWeight = FontWeight.W700)) {
-                                            append(state.data.name)
+                                            append(state.postDetail.profileDisplayId)
                                         }
                                     }
                                     append(" ")
-                                    append(state.data.content)
+                                    append(state.postDetail.content)
                                 }
                             )
                         }
@@ -467,7 +419,7 @@ private fun MenuItems(
 private fun PostDetailScreenPreview() {
     val fakePostDetail = PostDetail(
         id = 1,
-        name = "name",
+        profileDisplayId = "name",
         content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
         createdDate = LocalDateTime.now(),
         latitude = 1.0,
@@ -478,10 +430,9 @@ private fun PostDetailScreenPreview() {
     )
 
     EveryPinTheme {
-        PostDetailContainer(
+        PostDetailScreen(
             onBack = {},
-            postDetailState = UIState.Success(fakePostDetail),
-            address = "서울특별시 용산구"
+            uiState = PostDetailState.Success(fakePostDetail, "서울특별시 용산구")
         )
     }
 }

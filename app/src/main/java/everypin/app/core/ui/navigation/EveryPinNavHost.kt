@@ -8,7 +8,7 @@ import androidx.navigation.compose.NavHost
 import everypin.app.core.ui.EveryPinAppState
 import everypin.app.feature.chat.chatGraph
 import everypin.app.feature.notification.notificationGraph
-import everypin.app.feature.post.postGraph
+import everypin.app.feature.post.navigation.postGraph
 import everypin.app.feature.setting.settingGraph
 
 @Composable

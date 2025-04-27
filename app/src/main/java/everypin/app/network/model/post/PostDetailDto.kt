@@ -6,23 +6,23 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PostDetailDto(
     @SerialName("createdDate")
-    val createdDate: String?,
+    val createdDate: String,
     @SerialName("likeCount")
-    val likeCount: Int?,
-    @SerialName("name")
-    val name: String?,
+    val likeCount: Int,
     @SerialName("postContent")
-    val postContent: String?,
+    val postContent: String,
     @SerialName("postId")
-    val postId: Int?,
+    val postId: Int,
     @SerialName("postPhotos")
-    val postPhotos: List<PostPhotoDto>?,
+    val postPhotos: List<PostPhotoDto>,
     @SerialName("updateDate")
     val updateDate: String?,
     @SerialName("x")
-    val x: Double?,
+    val x: Double,
     @SerialName("y")
-    val y: Double?,
+    val y: Double,
     @SerialName("userId")
-    val userId: String?
+    val userId: String,
+    @SerialName("writer")
+    val writer: WriterDto
 )

@@ -4,7 +4,7 @@ import java.time.LocalDateTime
 
 data class PostDetail(
     val id: Int,
-    val name: String,
+    val profileDisplayId: String,
     val content: String,
     val createdDate: LocalDateTime,
     val latitude: Double,

@@ -52,15 +52,15 @@ class PostRepositoryImpl @Inject constructor(
             val formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME
             val createdDate = LocalDateTime.parse(data.createdDate, formatter)
             val post = PostDetail(
-                id = data.postId!!,
-                name = data.name ?: "알 수 없음",
-                content = data.postContent!!,
+                id = data.postId,
+                profileDisplayId = data.writer.profileDisplayId,
+                content = data.postContent,
                 createdDate = createdDate,
-                latitude = data.y!!,
-                longitude = data.x!!,
-                photoUrls = data.postPhotos!!.map { it.photoUrl!! },
-                likeCount = data.likeCount ?: 0,
-                userId = data.userId ?: "null"
+                latitude = data.y,
+                longitude = data.x,
+                photoUrls = data.postPhotos.map { it.photoUrl },
+                likeCount = data.likeCount,
+                userId = data.userId
             )
             emit(post)
         } else {

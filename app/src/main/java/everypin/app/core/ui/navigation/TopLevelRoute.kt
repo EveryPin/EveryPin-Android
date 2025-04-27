@@ -15,7 +15,7 @@ import everypin.app.feature.chat.navigateToChatList
 import everypin.app.feature.home.HomeScreen
 import everypin.app.feature.my.MyScreen
 import everypin.app.feature.notification.navigateToNotification
-import everypin.app.feature.post.navigateToPostDetail
+import everypin.app.feature.post.navigation.navigateToPostDetail
 import everypin.app.feature.setting.navigateToSetting
 import kotlinx.serialization.Serializable
 

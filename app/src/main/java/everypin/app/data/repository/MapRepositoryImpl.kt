@@ -15,17 +15,15 @@ class MapRepositoryImpl @Inject constructor(
     override fun getPinsByRange(lng: Double, lat: Double, range: Double): Flow<List<PostPin>> = flow {
         val resp = mapApi.getPinsByRange(lng, lat, range)
         val data = resp.body()
-        if (resp.isSuccessful) {
-            val posts = data?.filter {
-                it.postId != null && it.x != null && it.y != null && it.postPhotos != null
-            }?.map {
+        if (resp.isSuccessful && data != null) {
+            val posts = data.map {
                 PostPin(
-                    id = it.postId!!,
-                    lat = it.y!!,
-                    lng = it.x!!,
-                    imageUrl = it.postPhotos!!.first().photoUrl!!
+                    id = it.postId,
+                    lat = it.y,
+                    lng = it.x,
+                    imageUrl = it.postPhotos.first().photoUrl
                 )
-            } ?: emptyList()
+            }
             emit(posts)
         } else {
             throw resp.toHttpError()

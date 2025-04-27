@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class PostPhotoDto(
     @SerialName("photoUrl")
-    val photoUrl: String?,
+    val photoUrl: String,
     @SerialName("postPhotoId")
-    val postPhotoId: Int?
+    val postPhotoId: Int
 )
