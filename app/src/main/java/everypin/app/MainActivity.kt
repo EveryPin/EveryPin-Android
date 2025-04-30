@@ -1,4 +1,4 @@
-package everypin.app.core.ui
+package everypin.app
 
 import android.content.Context
 import android.content.Intent
@@ -13,6 +13,8 @@ import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import everypin.app.core.event.AuthEvent
 import everypin.app.core.event.AuthEventBus
+import everypin.app.core.ui.EveryPinApp
+import everypin.app.core.ui.rememberEveryPinAppState
 import everypin.app.core.ui.theme.EveryPinTheme
 import everypin.app.core.utils.Logger
 import everypin.app.feature.login.LoginActivity
@@ -44,12 +46,12 @@ class MainActivity : AppCompatActivity() {
                     when (event) {
                         AuthEvent.AuthExpired -> {
                             Logger.d("토큰 만료 이벤트 발생")
-                            LoginActivity.startActivityWithClearAllTasks(this@MainActivity)
+                            LoginActivity.Companion.startActivityWithClearAllTasks(this@MainActivity)
                         }
 
                         AuthEvent.SignOut -> {
                             Logger.d("로그아웃 이벤트 발생")
-                            LoginActivity.startActivityWithClearAllTasks(this@MainActivity)
+                            LoginActivity.Companion.startActivityWithClearAllTasks(this@MainActivity)
                         }
                     }
                 }

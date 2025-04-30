@@ -14,7 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import everypin.app.core.ui.theme.EveryPinTheme
-import everypin.app.core.ui.MainActivity
+import everypin.app.MainActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
