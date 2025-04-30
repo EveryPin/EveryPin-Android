@@ -1,4 +1,4 @@
-package everypin.app.feature.login
+package everypin.app.feature.login.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -30,31 +30,32 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.hilt.navigation.compose.hiltViewModel
 import everypin.app.R
 import everypin.app.core.constant.ProviderType
 import everypin.app.core.helper.rememberSocialSignInHelper
 import everypin.app.core.ui.component.button.GoogleSignInButton
 import everypin.app.core.ui.component.button.KakaoSignInButton
-import everypin.app.core.ui.state.SignInState
 import everypin.app.core.ui.theme.EveryPinTheme
 import everypin.app.core.ui.theme.LoadingBackgroundColor
 import everypin.app.core.utils.Logger
+import everypin.app.feature.login.state.LoginEvent
+import everypin.app.feature.login.viewmodel.LoginViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @Composable
-internal fun LoginScreen(
-    loginViewModel: LoginViewModel,
+internal fun LoginRoute(
+    loginViewModel: LoginViewModel = hiltViewModel(),
     onNavigateToHome: () -> Unit
 ) {
-    val signInState by loginViewModel.signInState.collectAsStateWithLifecycle()
     val socialSignInHelper = rememberSocialSignInHelper()
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     var showSignInErrorDialog by remember { mutableStateOf(false) }
     var signInErrorMsg by remember { mutableStateOf("") }
+    var showLoading by remember { mutableStateOf(false) }
 
     if (showSignInErrorDialog) {
         AlertDialog(
@@ -76,26 +77,30 @@ internal fun LoginScreen(
         )
     }
 
-    LaunchedEffect(signInState) {
-        when (signInState) {
-            is SignInState.Error -> {
-                val error = signInState as SignInState.Error
-                Logger.e(error.message, error.throwable)
-                signInErrorMsg = error.message
-                showSignInErrorDialog = true
-            }
+    LaunchedEffect(Unit) {
+        loginViewModel.receiveEvent.collect { event ->
+            when (event) {
+                LoginEvent.Loading -> {
+                    showLoading = true
+                }
 
-            SignInState.Success -> {
-                onNavigateToHome()
-            }
+                is LoginEvent.LoginFailed -> {
+                    Logger.e(event.message, event.t)
+                    showLoading = false
+                    signInErrorMsg = event.message
+                    showSignInErrorDialog = true
+                }
 
-            SignInState.Init -> {}
-            SignInState.Loading -> {}
+                LoginEvent.LoginSuccess -> {
+                    showLoading = false
+                    onNavigateToHome()
+                }
+            }
         }
     }
 
-    LoginContainer(
-        signInState = signInState,
+    LoginScreen(
+        showLoading = showLoading,
         onClickSignIn = { providerType ->
             scope.launch {
                 socialSignInHelper.signIn(providerType).catch { error ->
@@ -116,8 +121,8 @@ internal fun LoginScreen(
 }
 
 @Composable
-private fun LoginContainer(
-    signInState: SignInState,
+private fun LoginScreen(
+    showLoading: Boolean,
     onClickSignIn: (ProviderType) -> Unit,
 ) {
     Scaffold { innerPadding ->
@@ -158,7 +163,7 @@ private fun LoginContainer(
                     )
                 }
             }
-            if (signInState == SignInState.Loading) {
+            if (showLoading) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -177,8 +182,8 @@ private fun LoginContainer(
 @Composable
 private fun LoginScreenPreview() {
     EveryPinTheme {
-        LoginContainer(
-            signInState = SignInState.Init,
+        LoginScreen(
+            showLoading = false,
             onClickSignIn = {},
         )
     }

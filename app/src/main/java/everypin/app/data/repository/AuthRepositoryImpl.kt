@@ -1,6 +1,6 @@
 package everypin.app.data.repository
 
-import android.net.Uri
+import androidx.core.net.toUri
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
@@ -75,7 +75,7 @@ class AuthRepositoryImpl @Inject constructor(
                 if (firebaseUser != null) {
                     val profileUpdates = UserProfileChangeRequest.Builder().apply {
                         displayName = name
-                        photoUri = Uri.parse(profileImageUrl)
+                        photoUri = profileImageUrl?.toUri()
                     }.build()
                     firebaseUser.updateProfile(profileUpdates)
                     trySendBlocking(firebaseUser)

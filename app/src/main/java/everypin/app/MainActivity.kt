@@ -1,37 +1,27 @@
 package everypin.app
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.view.ViewTreeObserver
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import everypin.app.core.event.AuthEvent
 import everypin.app.core.event.AuthEventBus
 import everypin.app.core.ui.EveryPinApp
 import everypin.app.core.ui.rememberEveryPinAppState
 import everypin.app.core.ui.theme.EveryPinTheme
-import everypin.app.core.utils.Logger
-import everypin.app.feature.login.LoginActivity
-import kotlinx.coroutines.launch
+import everypin.app.datastore.DataStorePreferences
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    companion object {
-        fun startActivityWithClearAllTasks(context: Context) {
-            val intent = Intent(context, MainActivity::class.java).apply {
-                flags =
-                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            }
-            context.startActivity(intent)
-        }
-    }
+
+    @Inject
+    lateinit var dataStorePreferences: DataStorePreferences
 
     @Inject
     lateinit var authEventBus: AuthEventBus
@@ -39,29 +29,27 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-        lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                authEventBus.event.collect { event ->
-                    when (event) {
-                        AuthEvent.AuthExpired -> {
-                            Logger.d("토큰 만료 이벤트 발생")
-                            LoginActivity.Companion.startActivityWithClearAllTasks(this@MainActivity)
-                        }
-
-                        AuthEvent.SignOut -> {
-                            Logger.d("로그아웃 이벤트 발생")
-                            LoginActivity.Companion.startActivityWithClearAllTasks(this@MainActivity)
-                        }
-                    }
-                }
-            }
-        }
-
         setContent {
             val appState = rememberEveryPinAppState(
-                navController = rememberNavController()
+                navController = rememberNavController(),
+                dataStorePreferences = dataStorePreferences,
+                authEventBus = authEventBus,
+                coroutineScope = rememberCoroutineScope()
             )
+
+            DisposableEffect(Unit) {
+                val listener = object : ViewTreeObserver.OnPreDrawListener {
+                    override fun onPreDraw(): Boolean {
+                        return !appState.shouldShowSplash
+                    }
+                }
+                val content: View = findViewById(android.R.id.content)
+                content.viewTreeObserver.addOnPreDrawListener(listener)
+
+                onDispose {
+                    content.viewTreeObserver.removeOnPreDrawListener(listener)
+                }
+            }
 
             EveryPinTheme {
                 EveryPinApp(

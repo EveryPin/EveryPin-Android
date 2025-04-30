@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import everypin.app.core.ui.EveryPinAppState
 import everypin.app.feature.chat.chatGraph
+import everypin.app.feature.login.navigation.LoginRoute
+import everypin.app.feature.login.navigation.loginGraph
 import everypin.app.feature.notification.notificationGraph
 import everypin.app.feature.post.navigation.postGraph
 import everypin.app.feature.setting.settingGraph
@@ -19,12 +21,13 @@ fun EveryPinNavHost(
 ) {
     NavHost(
         navController = appState.navController,
-        startDestination = HomeRoute,
+        startDestination = LoginRoute,
         enterTransition = { fadeIn() },
         exitTransition = { fadeOut() },
         popEnterTransition = { fadeIn() },
         popExitTransition = { fadeOut() }
     ) {
+        loginGraph(navController = appState.navController)
         topLevelGraph(
             navController = appState.navController,
             innerPadding = innerPadding,
