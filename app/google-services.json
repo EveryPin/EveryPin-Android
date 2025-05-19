@@ -1,8 +1,9 @@
 {
   "project_info": {
     "project_number": "848206295425",
+    "firebase_url": "https://every-pin-default-rtdb.firebaseio.com",
     "project_id": "every-pin",
-    "storage_bucket": "every-pin.appspot.com"
+    "storage_bucket": "every-pin.firebasestorage.app"
   },
   "client": [
     {
@@ -12,7 +13,12 @@
           "package_name": "everypin.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "848206295425-u54jfrlfkt0hk3aa2oeiaujonta9ifh2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBY80-mS45srMODkJfgMGUMph5MvFkFpTU"
@@ -20,7 +26,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "848206295425-u54jfrlfkt0hk3aa2oeiaujonta9ifh2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

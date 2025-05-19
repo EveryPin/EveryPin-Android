@@ -55,24 +55,28 @@ android {
     }
 
     signingConfigs {
-        create("releaseSigningConfig") {
-            storeFile = signingConfigs.getByName("debug").storeFile
-            keyAlias = signingConfigs.getByName("debug").keyAlias
-            keyPassword = signingConfigs.getByName("debug").keyPassword
-            storePassword = signingConfigs.getByName("debug").storePassword
+        create("key") {
+            storeFile = file("../keystore/every_pin_key.jks")
+            storePassword = getLocalPropertyValue("store.password")
+            keyAlias = getLocalPropertyValue("key.alias")
+            keyPassword = getLocalPropertyValue("key.password")
         }
     }
 
     buildTypes {
+        debug {
+            signingConfig = signingConfigs.getByName("key")
+        }
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("releaseSigningConfig")
+            signingConfig = signingConfigs.getByName("key")
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
