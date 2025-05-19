@@ -1,4 +1,4 @@
-package everypin.app.core.ui
+package everypin.app
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable

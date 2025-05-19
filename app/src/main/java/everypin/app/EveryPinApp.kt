@@ -1,4 +1,4 @@
-package everypin.app.core.ui
+package everypin.app
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -19,7 +17,6 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -30,7 +27,6 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import everypin.app.R
 import everypin.app.core.ui.navigation.AddPinRoute
 import everypin.app.core.ui.navigation.EveryPinNavHost
 import everypin.app.core.ui.navigation.navigateToAddPin
@@ -90,39 +86,6 @@ internal fun EveryPinApp(
             )
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun HomeTopAppBar(
-    modifier: Modifier = Modifier,
-    onClickNotification: () -> Unit,
-    onClickChat: () -> Unit
-) {
-    TopAppBar(
-        title = {
-            Text(stringResource(id = R.string.app_name))
-        },
-        modifier = modifier,
-        actions = {
-            IconButton(
-                onClick = onClickNotification
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_notifications),
-                    contentDescription = stringResource(id = R.string.notification),
-                )
-            }
-            IconButton(
-                onClick = onClickChat
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_chat),
-                    contentDescription = stringResource(id = R.string.chat),
-                )
-            }
-        }
-    )
 }
 
 @Composable

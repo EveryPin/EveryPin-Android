@@ -5,7 +5,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
-import everypin.app.core.ui.EveryPinAppState
+import everypin.app.EveryPinAppState
 import everypin.app.feature.chat.chatGraph
 import everypin.app.feature.login.navigation.LoginRoute
 import everypin.app.feature.login.navigation.loginGraph

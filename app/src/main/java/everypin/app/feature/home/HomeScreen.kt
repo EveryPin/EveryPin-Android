@@ -13,11 +13,15 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,9 +33,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
@@ -56,7 +61,6 @@ import everypin.app.core.extension.findActivity
 import everypin.app.core.extension.showSnackBarForPermissionSetting
 import everypin.app.core.ui.theme.EveryPinTheme
 import everypin.app.core.utils.CommonUtil
-import everypin.app.core.ui.HomeTopAppBar
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalNaverMapApi::class)
@@ -205,12 +209,12 @@ internal fun HomeScreen(
                     isZoomControlEnabled = false
                 )
             ) {
-                val configuration = LocalConfiguration.current
+                val windowInfo = LocalWindowInfo.current
                 DisposableMapEffect(key1 = Unit) { map ->
                     val listener = OnCameraIdleListener {
                         val currentLatLng = cameraPositionState.position.target
                         val radiusDistance =
-                            map.projection.metersPerDp * configuration.screenHeightDp / 2
+                            map.projection.metersPerDp * windowInfo.containerSize.height / 2
                         val targetLatLng = CommonUtil.calculateNewCoordinates(
                             currentLatLng.latitude,
                             currentLatLng.longitude,
@@ -309,6 +313,39 @@ private fun HomeContainer(
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HomeTopAppBar(
+    modifier: Modifier = Modifier,
+    onClickNotification: () -> Unit,
+    onClickChat: () -> Unit
+) {
+    TopAppBar(
+        title = {
+            Text(stringResource(id = R.string.app_name))
+        },
+        modifier = modifier,
+        actions = {
+            IconButton(
+                onClick = onClickNotification
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_notifications),
+                    contentDescription = stringResource(id = R.string.notification),
+                )
+            }
+            IconButton(
+                onClick = onClickChat
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_chat),
+                    contentDescription = stringResource(id = R.string.chat),
+                )
+            }
+        }
+    )
 }
 
 @Preview(showBackground = true)

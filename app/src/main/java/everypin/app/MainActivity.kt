@@ -11,8 +11,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import everypin.app.core.event.AuthEventBus
-import everypin.app.core.ui.EveryPinApp
-import everypin.app.core.ui.rememberEveryPinAppState
 import everypin.app.core.ui.theme.EveryPinTheme
 import everypin.app.datastore.DataStorePreferences
 import javax.inject.Inject
