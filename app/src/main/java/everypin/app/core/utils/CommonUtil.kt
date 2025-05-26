@@ -1,5 +1,15 @@
 package everypin.app.core.utils
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import androidx.core.net.toUri
+import everypin.app.core.extension.getTempImagesDir
+import logcat.asLog
+import logcat.logcat
+import java.io.File
+import java.util.UUID
 import kotlin.math.asin
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -48,4 +58,23 @@ object CommonUtil {
         return sqrt(dx.pow(2) + dy.pow(2))
     }
 
+    fun createTempImage(context: Context, uri: Uri): Result<Uri> {
+        val source = ImageDecoder.createSource(context.contentResolver, uri)
+        val bitmap = ImageDecoder.decodeBitmap(source)
+        val tempDir = context.getTempImagesDir()
+        val imageFileName = "${UUID.randomUUID()}.jpg"
+        val pickImageFile = File(tempDir, imageFileName)
+        val outputStream = pickImageFile.outputStream()
+        try {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+            return Result.success(pickImageFile.toUri())
+        } catch (e: Exception) {
+            logcat { e.asLog() }
+            return Result.failure(e)
+        } finally {
+            outputStream.flush()
+            outputStream.close()
+            bitmap.recycle()
+        }
+    }
 }

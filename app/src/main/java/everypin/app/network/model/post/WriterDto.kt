@@ -12,16 +12,10 @@ data class WriterDto(
     val photoUrl: String?,
     @SerialName("profileDisplayId")
     val profileDisplayId: String,
-    @SerialName("profileId")
-    val profileId: Int,
     @SerialName("profileName")
     val profileName: String,
     @SerialName("selfIntroduction")
     val selfIntroduction: String?,
     @SerialName("updatedDate")
-    val updatedDate: String?,
-    @SerialName("user")
-    val user: String?,
-    @SerialName("userId")
-    val userId: String
+    val updatedDate: String?
 )

@@ -160,7 +160,6 @@ private fun ChatListItem(
     ) {
         CommonAsyncImage(
             data = chatListModel.profileImgUrl,
-            placeholder = painterResource(id = R.drawable.ic_face),
             modifier = Modifier
                 .size(60.dp)
                 .clip(CircleShape),

@@ -14,7 +14,6 @@ import everypin.app.core.event.AuthEventBus
 import everypin.app.core.ui.navigation.AddPinRoute
 import everypin.app.core.ui.navigation.navigateToHome
 import everypin.app.core.ui.navigation.topLevelRoutes
-import everypin.app.core.utils.Logger
 import everypin.app.datastore.DataStorePreferences
 import everypin.app.datastore.PreferencesKey
 import everypin.app.feature.login.navigation.navigateToLogin
@@ -22,6 +21,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import logcat.logcat
 
 @Composable
 fun rememberEveryPinAppState(
@@ -82,17 +82,17 @@ class EveryPinAppState(
             authEventBus.event.collect { event ->
                 when (event) {
                     AuthEvent.AuthExpired -> {
-                        Logger.d("토큰 만료 이벤트 발생")
+                        logcat { "토큰 만료 이벤트 발생" }
                         navController.navigateToLogin()
                     }
 
                     AuthEvent.SignOut -> {
-                        Logger.d("로그아웃 이벤트 발생")
+                        logcat { "로그아웃 이벤트 발생" }
                         navController.navigateToLogin()
                     }
 
                     AuthEvent.Authenticated -> {
-                        Logger.d("인증됨")
+                        logcat { "인증됨" }
                         navController.navigateToHome(
                             navOptions = navOptions {
                                 popUpTo(0) {
@@ -106,7 +106,7 @@ class EveryPinAppState(
                     }
 
                     AuthEvent.NotAuthenticated -> {
-                        Logger.d("인증되지 않음")
+                        logcat { "인증되지 않음" }
                         shouldShowSplash = false
                     }
                 }
@@ -114,7 +114,7 @@ class EveryPinAppState(
         }
     }
 
-    private fun checkAuthentication() {
+    fun checkAuthentication() {
         coroutineScope.launch {
             val token = dataStorePreferences.getString(PreferencesKey.ACCESS_TOKEN).first()
             if (token != null) {

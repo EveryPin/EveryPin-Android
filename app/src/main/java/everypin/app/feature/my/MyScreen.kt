@@ -16,6 +16,7 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,23 +38,18 @@ import everypin.app.core.ui.theme.EveryPinTheme
 import everypin.app.data.model.Profile
 
 @Composable
-internal fun MyScreen(
+internal fun MyRoute(
     myViewModel: MyViewModel = hiltViewModel(),
     innerPadding: PaddingValues,
-    onShowSnackbar: suspend (String, String?) -> Unit,
-    onNavigateToSetting: () -> Unit
+    onShowSnackbar: suspend (String, String?) -> SnackbarResult,
+    onNavigateToSetting: () -> Unit,
+    onNavigateToProfileEdit: () -> Unit
 ) {
     val profileState = myViewModel.profileState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        if (profileState.value == null) {
-            myViewModel.getProfileMe()
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        myViewModel.myEvent.collect { event ->
+        myViewModel.event.collect { event ->
             when (event) {
                 is MyEvent.ProfileLoadError -> {
                     onShowSnackbar(
@@ -67,28 +63,30 @@ internal fun MyScreen(
         }
     }
 
-    MyContainer(
+    MyScreen(
         innerPadding = innerPadding,
-        profile = profileState.value,
+        uiState = profileState.value,
         onClickSetting = onNavigateToSetting,
         onClickFollower = {},
         onClickFollow = {},
         onClickCheckPin = {},
-        onClickEditProfile = {}
+        onClickEditProfile = onNavigateToProfileEdit
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun MyContainer(
+private fun MyScreen(
     innerPadding: PaddingValues,
-    profile: Profile?,
+    uiState: MyUiState,
     onClickSetting: () -> Unit,
     onClickFollower: () -> Unit,
     onClickFollow: () -> Unit,
     onClickCheckPin: () -> Unit,
     onClickEditProfile: () -> Unit
 ) {
+    val profile = (uiState as? MyUiState.Success)?.profile
+
     Surface(
         modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())
     ) {
@@ -121,6 +119,7 @@ private fun MyContainer(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
                     .fillMaxWidth(),
+                isLoading = uiState is MyUiState.Loading,
                 nickname = profile?.name ?: "",
                 intro = profile?.selfIntroduction ?: "",
                 profileImageUrl = profile?.photoUrl,
@@ -183,14 +182,16 @@ private fun MyContainer(
 private fun MyScreenPreview() {
     EveryPinTheme {
         Surface {
-            MyContainer(
+            MyScreen(
                 innerPadding = PaddingValues(),
-                profile = Profile(
-                    id = "1",
-                    displayId = "displayId",
-                    name = "name",
-                    photoUrl = null,
-                    selfIntroduction = "selfIntroduction"
+                uiState = MyUiState.Success(
+                    Profile(
+                        email = "email",
+                        displayId = "displayId",
+                        name = "name",
+                        photoUrl = null,
+                        selfIntroduction = "selfIntroduction"
+                    )
                 ),
                 onClickSetting = {},
                 onClickFollower = {},

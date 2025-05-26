@@ -32,8 +32,12 @@ object RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideKotlinxSerializationConverterFactory() =
-        Json.asConverterFactory("application/json; charset=UTF-8".toMediaType())
+    fun provideKotlinxSerializationConverterFactory(): Converter.Factory {
+        val json = Json {
+            ignoreUnknownKeys = true
+        }
+        return json.asConverterFactory("application/json; charset=UTF-8".toMediaType())
+    }
 
     @Provides
     @Singleton

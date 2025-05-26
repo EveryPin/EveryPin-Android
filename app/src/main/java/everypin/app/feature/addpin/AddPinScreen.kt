@@ -1,16 +1,10 @@
 package everypin.app.feature.addpin
 
-import android.app.Activity
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.provider.MediaStore
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,11 +26,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.LocalRippleConfiguration
 import androidx.compose.material3.RippleConfiguration
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -63,34 +57,29 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
 import androidx.core.content.IntentCompat
-import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import everypin.app.R
-import everypin.app.core.extension.getTempImagesDir
-import everypin.app.core.extension.getUriForFile
 import everypin.app.core.extension.removeTempImagesDir
 import everypin.app.core.ui.component.CommonAsyncImage
-import everypin.app.core.ui.component.dialog.PermissionAlertDialog
+import everypin.app.core.ui.component.dialog.ImageAddMenuDialog
 import everypin.app.core.ui.theme.EveryPinTheme
 import everypin.app.core.utils.FileUtil
 import everypin.app.core.utils.Logger
 import everypin.app.data.model.PlaceInfo
 import everypin.app.feature.search.SearchPlaceActivity
 import kotlinx.coroutines.launch
-import java.io.File
-import java.util.UUID
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-internal fun AddPinScreen(
+internal fun AddPinRoute(
     addPinViewModel: AddPinViewModel = hiltViewModel(),
-    onShowSnackbar: suspend (String, String?) -> Unit
+    onShowSnackbar: suspend (String, String?) -> SnackbarResult
 ) {
+    val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val onBackPressedDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val selectedImageList by addPinViewModel.selectedImageListState.collectAsStateWithLifecycle()
@@ -219,7 +208,7 @@ internal fun AddPinScreen(
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        AddPinContainer(
+        AddPinScreen(
             onBack = {
                 onBackPressedDispatcher?.onBackPressed()
             },
@@ -233,7 +222,11 @@ internal fun AddPinScreen(
                 searchPlaceLauncher.launch(Intent(context, SearchPlaceActivity::class.java))
             },
             pinAddress = pinState?.address ?: "",
-            onShowSnackbar = onShowSnackbar
+            onShowSnackbar = {
+                scope.launch {
+                    onShowSnackbar(it, null)
+                }
+            }
         )
         if (addPinViewModel.isLoading) {
             Box(
@@ -250,7 +243,7 @@ internal fun AddPinScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AddPinContainer(
+private fun AddPinScreen(
     onBack: () -> Unit,
     onClickDeleteSelectedImage: (index: Int) -> Unit,
     onClickRegPin: (content: String) -> Unit,
@@ -258,101 +251,28 @@ private fun AddPinContainer(
     selectedImageList: List<Uri>,
     onClickAddressSearch: () -> Unit,
     pinAddress: String,
-    onShowSnackbar: suspend (String, String?) -> Unit
+    onShowSnackbar: (String) -> Unit
 ) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    var showPermissionGuideDialog by remember { mutableStateOf(false) }
-    val pickMultipleMedia = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickMultipleVisualMedia()
-    ) { uris ->
-        uris.map { uri ->
-            val source = ImageDecoder.createSource(context.contentResolver, uri)
-            val bitmap = ImageDecoder.decodeBitmap(source)
-            val tempDir = context.getTempImagesDir()
-            val imageFileName = "${UUID.randomUUID()}.jpg"
-            val pickImageFile = File(tempDir, imageFileName)
-            val outputStream = pickImageFile.outputStream()
-            try {
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-                onSelectedImages(listOf(pickImageFile.toUri()))
-            } catch (e: Exception) {
-                e.message?.let {
-                    scope.launch {
-                        onShowSnackbar(it, null)
-                    }
-                }
-                Logger.e(e.message.toString(), e)
-            } finally {
-                outputStream.flush()
-                outputStream.close()
-                bitmap.recycle()
-            }
-        }
-    }
-    var takePictureTempFile: File? by remember { mutableStateOf(null) }
-    val takePictureLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                takePictureTempFile?.let { file ->
-                    if (file.length() > 0L) {
-                        onSelectedImages(listOf(file.toUri()))
-                    }
-                    takePictureTempFile == null
-                }
-            }
-        }
     var showImageAddMenuDialog by remember { mutableStateOf(false) }
     var content by remember { mutableStateOf("") }
 
-    if (showPermissionGuideDialog) {
-        PermissionAlertDialog(
-            onDismiss = {
-                showPermissionGuideDialog = false
-            },
-            permissions = listOf(
-                stringResource(id = R.string.photo_and_video),
-                stringResource(id = R.string.camera)
-            )
-        )
-    }
-
     if (showImageAddMenuDialog) {
-        Dialog(
+        ImageAddMenuDialog(
             onDismissRequest = {
                 showImageAddMenuDialog = false
+            },
+            onSelectedImages = {
+                onSelectedImages(it)
+                showImageAddMenuDialog = false
+            },
+            onError = { e ->
+                showImageAddMenuDialog = false
+                e.message?.let {
+                    onShowSnackbar(it)
+                }
+                Logger.e(e.message.toString(), e)
             }
-        ) {
-            Column(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                ListItem(
-                    headlineContent = {
-                        Text(text = stringResource(id = R.string.take_picture))
-                    },
-                    modifier = Modifier.clickable {
-                        val tempDir = context.getTempImagesDir()
-                        takePictureTempFile = File(tempDir, "${UUID.randomUUID()}.jpg")
-                        takePictureTempFile?.let {
-                            val tempUri = context.getUriForFile(it)
-                            takePictureLauncher.launch(Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
-                                putExtra(MediaStore.EXTRA_OUTPUT, tempUri)
-                            })
-                        }
-                        showImageAddMenuDialog = false
-                    }
-                )
-                ListItem(
-                    headlineContent = {
-                        Text(text = stringResource(id = R.string.select_image))
-                    },
-                    modifier = Modifier.clickable {
-                        pickMultipleMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                        showImageAddMenuDialog = false
-                    }
-                )
-            }
-        }
+        )
     }
 
     Scaffold(
@@ -520,7 +440,7 @@ private fun ImageLazyRow(
 @Composable
 private fun AddPinScreenPreview() {
     EveryPinTheme {
-        AddPinContainer(
+        AddPinScreen(
             onBack = {},
             onClickDeleteSelectedImage = {},
             onClickRegPin = {},
@@ -528,7 +448,7 @@ private fun AddPinScreenPreview() {
             selectedImageList = emptyList(),
             onClickAddressSearch = {},
             pinAddress = "서울특별시 중구 세종대로 110",
-            onShowSnackbar = { _, _ -> }
+            onShowSnackbar = {}
         )
     }
 }

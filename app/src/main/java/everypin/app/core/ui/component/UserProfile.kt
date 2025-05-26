@@ -4,6 +4,7 @@ import android.icu.text.DecimalFormat
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,10 +19,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import everypin.app.R
+import everypin.app.core.ui.shimmerBackground
 import everypin.app.core.ui.theme.EveryPinTheme
 
 @Composable
@@ -29,6 +29,7 @@ fun UserProfile(
     onClickFollower: () -> Unit,
     onClickFollow: () -> Unit,
     modifier: Modifier = Modifier,
+    isLoading: Boolean,
     nickname: String,
     intro: String,
     profileImageUrl: String?,
@@ -43,14 +44,17 @@ fun UserProfile(
         horizontalArrangement = Arrangement.spacedBy(13.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        CommonAsyncImage(
-            data = profileImageUrl,
-            placeholder = painterResource(id = R.drawable.ic_face),
-            modifier = Modifier
+        BoxWithConstraints(
+            modifier = if (isLoading) Modifier.shimmerBackground() else Modifier
                 .size(100.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop
-        )
+                .clip(CircleShape)
+        ) {
+            CommonAsyncImage(
+                data = profileImageUrl,
+                modifier = Modifier.size(this.minWidth, this.minHeight),
+                contentScale = ContentScale.Crop
+            )
+        }
         Column(
             modifier = Modifier.weight(1f)
         ) {

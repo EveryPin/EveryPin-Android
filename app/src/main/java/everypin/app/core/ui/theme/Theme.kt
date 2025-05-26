@@ -1,11 +1,13 @@
 package everypin.app.core.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 
 private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,
@@ -71,6 +73,10 @@ private val DarkColors = darkColorScheme(
     scrim = md_theme_dark_scrim,
 )
 
+internal val LocalColors = staticCompositionLocalOf<ColorScheme> {
+    error("No ColorPalette provided")
+}
+
 @Composable
 fun EveryPinTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -79,6 +85,7 @@ fun EveryPinTheme(
     val colorScheme = if (darkTheme) DarkColors else LightColors
 
     CompositionLocalProvider(
+        LocalColors provides colorScheme,
         LocalTypography provides Typography
     ) {
         MaterialTheme(
@@ -89,6 +96,9 @@ fun EveryPinTheme(
 }
 
 object EveryPinTheme {
+    val colors: ColorScheme
+        @Composable
+        get() = LocalColors.current
     val typography: EveryPinTypography
         @Composable
         get() = LocalTypography.current

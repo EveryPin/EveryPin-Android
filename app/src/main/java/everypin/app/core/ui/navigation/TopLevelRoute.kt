@@ -5,17 +5,19 @@ import androidx.annotation.StringRes
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.SnackbarResult
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import everypin.app.R
-import everypin.app.feature.addpin.AddPinScreen
+import everypin.app.feature.addpin.AddPinRoute
 import everypin.app.feature.chat.navigateToChatList
 import everypin.app.feature.home.HomeScreen
-import everypin.app.feature.my.MyScreen
+import everypin.app.feature.my.MyRoute
 import everypin.app.feature.notification.navigateToNotification
 import everypin.app.feature.post.navigation.navigateToPostDetail
+import everypin.app.feature.profile.navigation.navigateToProfileEdit
 import everypin.app.feature.setting.navigateToSetting
 import kotlinx.serialization.Serializable
 
@@ -71,7 +73,7 @@ fun NavController.navigateToMy(navOptions: NavOptions) {
 fun NavGraphBuilder.topLevelGraph(
     navController: NavController,
     innerPadding: PaddingValues,
-    onShowSnackbar: suspend (String, String?) -> Unit
+    onShowSnackbar: suspend (String, String?) -> SnackbarResult
 ) {
     composable<HomeRoute>(
         enterTransition = { EnterTransition.None },
@@ -93,7 +95,7 @@ fun NavGraphBuilder.topLevelGraph(
         )
     }
     composable<AddPinRoute> {
-        AddPinScreen(
+        AddPinRoute(
             onShowSnackbar = onShowSnackbar
         )
     }
@@ -103,11 +105,14 @@ fun NavGraphBuilder.topLevelGraph(
         popEnterTransition = { EnterTransition.None },
         popExitTransition = { ExitTransition.None }
     ) {
-        MyScreen(
+        MyRoute(
             innerPadding = innerPadding,
             onShowSnackbar = onShowSnackbar,
             onNavigateToSetting = {
                 navController.navigateToSetting()
+            },
+            onNavigateToProfileEdit = {
+                navController.navigateToProfileEdit()
             }
         )
     }

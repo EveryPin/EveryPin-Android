@@ -3,7 +3,6 @@ package everypin.app.feature.my
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import everypin.app.core.utils.Logger
 import everypin.app.data.model.Profile
 import everypin.app.data.repository.ProfileRepository
 import kotlinx.coroutines.channels.Channel
@@ -19,23 +18,31 @@ import javax.inject.Inject
 class MyViewModel @Inject constructor(
     private val profileRepository: ProfileRepository
 ) : ViewModel() {
-    private val _myEvent = Channel<MyEvent>(Channel.BUFFERED)
-    val myEvent = _myEvent.receiveAsFlow()
+    private val _event = Channel<MyEvent>(Channel.BUFFERED)
+    val event = _event.receiveAsFlow()
 
-    private val _profileState = MutableStateFlow<Profile?>(null)
+    private val _profileState = MutableStateFlow<MyUiState>(MyUiState.Loading)
     val profileState = _profileState.asStateFlow()
 
-    fun getProfileMe() {
+    init {
+        fetchProfile()
+    }
+
+    fun fetchProfile() {
         viewModelScope.launch {
             profileRepository.getProfileMe().catch {
-                Logger.e(it.message.toString(), it)
-                _myEvent.send(MyEvent.ProfileLoadError(it))
+                _profileState.value = MyUiState.Error(it)
             }.collectLatest {
-                Logger.d("프로필 조회 성공")
-                _profileState.value = it
+                _profileState.value = MyUiState.Success(it)
             }
         }
     }
+}
+
+sealed class MyUiState {
+    data object Loading : MyUiState()
+    data class Success(val profile: Profile) : MyUiState()
+    data class Error(val throwable: Throwable) : MyUiState()
 }
 
 sealed class MyEvent {

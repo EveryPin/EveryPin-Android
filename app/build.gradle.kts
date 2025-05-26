@@ -157,4 +157,5 @@ dependencies {
     implementation(libs.naver.map.compose)
 
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.logcat)
 }

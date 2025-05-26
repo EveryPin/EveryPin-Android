@@ -29,6 +29,14 @@ class AuthInterceptor @Inject constructor(
         val accessToken = runBlocking {
             prefs.getString(PreferencesKey.ACCESS_TOKEN).first()
         }
+
+        if (accessToken.isNullOrBlank()) {
+            return runBlocking {
+                authEventBus.notifyNotAuthenticated()
+                chain.proceed(request)
+            }
+        }
+
         val authenticatedRequest = request.newBuilder().apply {
             header("Authorization", "Bearer $accessToken")
         }

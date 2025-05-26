@@ -1,18 +1,16 @@
 package everypin.app.core.ui.component
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.DefaultAlpha
-import androidx.compose.ui.graphics.FilterQuality
-import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import coil.compose.AsyncImage
-import coil.compose.AsyncImagePainter
+import androidx.compose.ui.res.painterResource
+import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import everypin.app.R
+import everypin.app.core.ui.shimmerBackground
 
 @Composable
 fun CommonAsyncImage(
@@ -20,35 +18,30 @@ fun CommonAsyncImage(
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
     crossFade: Boolean = true,
-    placeholder: Painter? = null,
-    error: Painter? = null,
-    fallback: Painter? = error,
-    onLoading: ((AsyncImagePainter.State.Loading) -> Unit)? = null,
-    onSuccess: ((AsyncImagePainter.State.Success) -> Unit)? = null,
-    onError: ((AsyncImagePainter.State.Error) -> Unit)? = null,
-    alignment: Alignment = Alignment.Center,
-    contentScale: ContentScale = ContentScale.Fit,
-    alpha: Float = DefaultAlpha,
-    colorFilter: ColorFilter? = null,
-    filterQuality: FilterQuality = DrawScope.DefaultFilterQuality,
+    contentScale: ContentScale = ContentScale.Fit
 ) {
-    AsyncImage(
+    SubcomposeAsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
-            .data(data)
+            .data(data ?: R.drawable.img_placeholder)
             .crossfade(crossFade)
             .build(),
-        placeholder = placeholder,
         contentDescription = contentDescription,
         modifier = modifier,
-        error = error,
-        fallback = fallback,
-        onLoading = onLoading,
-        onSuccess = onSuccess,
-        onError = onError,
-        alignment = alignment,
+        loading = {
+            Box(
+                modifier = Modifier
+                    .shimmerBackground()
+                    .then(modifier)
+            )
+        },
+        error = {
+            Image(
+                painter = painterResource(R.drawable.img_image_load_error),
+                contentDescription = null,
+                modifier = modifier,
+                contentScale = ContentScale.Crop
+            )
+        },
         contentScale = contentScale,
-        alpha = alpha,
-        colorFilter = colorFilter,
-        filterQuality = filterQuality
     )
 }
