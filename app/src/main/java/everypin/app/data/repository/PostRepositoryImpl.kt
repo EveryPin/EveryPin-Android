@@ -1,13 +1,13 @@
 package everypin.app.data.repository
 
 import everypin.app.core.extension.toHttpError
-import everypin.app.core.utils.Logger
 import everypin.app.data.model.PostDetail
 import everypin.app.network.api.PostApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import logcat.logcat
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -37,7 +37,7 @@ class PostRepositoryImpl @Inject constructor(
             }
         )
         if (resp.isSuccessful) {
-            Logger.d("게시글 생성됨. post: ${resp.body()}")
+            logcat { "게시글 생성됨. post: ${resp.body()}" }
             emit(Unit)
         } else {
             throw resp.toHttpError()

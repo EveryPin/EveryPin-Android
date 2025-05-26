@@ -7,7 +7,6 @@ import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import everypin.app.core.helper.GeocoderHelper
-import everypin.app.core.utils.Logger
 import everypin.app.data.repository.PostRepository
 import everypin.app.feature.post.state.PostDetailState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,6 +17,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 
 @HiltViewModel(assistedFactory = PostDetailViewModel.Factory::class)
 class PostDetailViewModel @AssistedInject constructor(
@@ -42,13 +44,13 @@ class PostDetailViewModel @AssistedInject constructor(
     private fun fetchPostDetail() {
         viewModelScope.launch {
             postRepository.getPost(id).catch {
-                Logger.e(it.message.toString(), it)
+                logcat(LogPriority.ERROR) { it.asLog() }
                 _uiState.value = PostDetailState.Error(it)
             }.map { postDetail ->
                 val address =
                     geocoderHelper.getAddressFromLocation(postDetail.latitude, postDetail.longitude)
                         .catch {
-                            Logger.e("주소를 가져오는데 실패", it)
+                            logcat(LogPriority.ERROR) { it.asLog() }
                             emit("")
                         }.first()
                 PostDetailState.Success(postDetail, address)

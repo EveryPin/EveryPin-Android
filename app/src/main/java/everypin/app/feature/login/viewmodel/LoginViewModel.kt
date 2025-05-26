@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import everypin.app.core.constant.ProviderType
-import everypin.app.core.utils.Logger
 import everypin.app.data.repository.AuthRepository
 import everypin.app.feature.login.state.LoginEvent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,6 +17,9 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 import javax.inject.Inject
 
 @HiltViewModel
@@ -55,12 +57,14 @@ class LoginViewModel @Inject constructor(
                 }
 
                 task.exception != null -> {
-                    Logger.e("FCM 토큰을 받아오는 중 에러 발생", task.exception)
+                    logcat(LogPriority.ERROR) {
+                        task.exception?.asLog() ?: "FCM 토큰을 받아오는 중 에러 발생"
+                    }
                     trySend("")
                 }
 
                 else -> {
-                    Logger.w("FCM 토큰을 받아올 수 없음.")
+                    logcat(LogPriority.WARN) { "FCM 토큰을 받아올 수 없음." }
                     trySend("")
                 }
             }

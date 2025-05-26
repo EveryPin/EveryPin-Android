@@ -68,10 +68,12 @@ import everypin.app.core.ui.component.CommonAsyncImage
 import everypin.app.core.ui.component.dialog.ImageAddMenuDialog
 import everypin.app.core.ui.theme.EveryPinTheme
 import everypin.app.core.utils.FileUtil
-import everypin.app.core.utils.Logger
 import everypin.app.data.model.PlaceInfo
 import everypin.app.feature.search.SearchPlaceActivity
 import kotlinx.coroutines.launch
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -266,11 +268,11 @@ private fun AddPinScreen(
                 showImageAddMenuDialog = false
             },
             onError = { e ->
+                logcat("AddPinScreen", LogPriority.ERROR) { e.asLog() }
                 showImageAddMenuDialog = false
                 e.message?.let {
                     onShowSnackbar(it)
                 }
-                Logger.e(e.message.toString(), e)
             }
         )
     }

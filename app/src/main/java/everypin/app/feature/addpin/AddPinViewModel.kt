@@ -6,7 +6,6 @@ import androidx.core.net.toFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import everypin.app.core.utils.Logger
 import everypin.app.data.repository.PostRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,6 +15,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import logcat.asLog
+import logcat.logcat
 import javax.inject.Inject
 
 @HiltViewModel
@@ -76,11 +77,10 @@ class AddPinViewModel @Inject constructor(
                         lng = pinState.lng,
                         imagePaths = selectedImageListState.value.map { it.toFile().absolutePath }
                     ).catch {
-                        Logger.e("핀 등록 실패", it)
+                        logcat { it.asLog() }
                         _isLoading.value = false
                         _regPinEvent.send(RegPinEvent.Error(it))
                     }.collectLatest {
-                        Logger.i("핀 등록 성공")
                         _isLoading.value = false
                         _regPinEvent.send(RegPinEvent.Success)
                     }

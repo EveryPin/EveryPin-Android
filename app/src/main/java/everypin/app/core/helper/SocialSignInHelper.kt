@@ -16,7 +16,6 @@ import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import everypin.app.BuildConfig
 import everypin.app.core.constant.ProviderType
-import everypin.app.core.utils.Logger
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.channels.onFailure
@@ -24,6 +23,9 @@ import kotlinx.coroutines.channels.trySendBlocking
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 import kotlin.coroutines.cancellation.CancellationException
 
 class SocialSignInHelper(
@@ -41,7 +43,7 @@ class SocialSignInHelper(
         val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
             when {
                 error is ClientError && error.reason == ClientErrorCause.Cancelled -> {
-                    Logger.i("카카오 로그인 취소됨.")
+                    logcat { "카카오 로그인 취소됨." }
                 }
 
                 error != null -> {
@@ -49,9 +51,7 @@ class SocialSignInHelper(
                 }
 
                 else -> {
-                    trySendBlocking(token?.accessToken).onFailure {
-                        Logger.e(it?.message.toString(), it)
-                    }
+                    trySendBlocking(token?.accessToken)
                 }
             }
             channel.close()
@@ -65,7 +65,7 @@ class SocialSignInHelper(
                     }
 
                     error != null -> {
-                        Logger.v("카카오톡으로 로그인 실패", error)
+                        logcat(LogPriority.ERROR) { error.asLog() }
                         UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
                     }
 
@@ -101,7 +101,7 @@ class SocialSignInHelper(
                 throw Throwable("Unexpected type of credential")
             }
         } catch (e: GetCredentialCancellationException) {
-            Logger.i("구글 로그인 취소됨", e)
+            logcat(LogPriority.WARN) { e.asLog() }
         }
     }
 }

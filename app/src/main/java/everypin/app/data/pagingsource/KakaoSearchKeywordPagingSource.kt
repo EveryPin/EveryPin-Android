@@ -3,9 +3,10 @@ package everypin.app.data.pagingsource
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import everypin.app.core.extension.toHttpError
-import everypin.app.core.utils.Logger
 import everypin.app.data.model.PlaceInfo
 import everypin.app.network.api.KakaoApi
+import logcat.asLog
+import logcat.logcat
 
 class KakaoSearchKeywordPagingSource(
     private val kakaoApi: KakaoApi,
@@ -48,7 +49,7 @@ class KakaoSearchKeywordPagingSource(
                 throw response.toHttpError()
             }
         } catch (e: Exception) {
-            Logger.e(e.message.toString(), e)
+            logcat { e.asLog() }
             return LoadResult.Error(e)
         }
     }

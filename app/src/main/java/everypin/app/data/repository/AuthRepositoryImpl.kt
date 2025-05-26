@@ -6,7 +6,6 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import everypin.app.core.constant.ProviderType
 import everypin.app.core.extension.toHttpError
-import everypin.app.core.utils.Logger
 import everypin.app.data.model.LoginRequest
 import everypin.app.datastore.DataStorePreferences
 import everypin.app.datastore.PreferencesKey
@@ -18,6 +17,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -54,7 +56,7 @@ class AuthRepositoryImpl @Inject constructor(
         val resp = authApi.logout()
         if (!resp.isSuccessful) {
             val error = resp.toHttpError()
-            Logger.w("로그아웃 요청 실패", error)
+            logcat(LogPriority.WARN) { error.asLog() }
         }
 
         dataStorePreferences.remove(PreferencesKey.ACCESS_TOKEN)

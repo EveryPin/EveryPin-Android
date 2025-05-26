@@ -1,6 +1,8 @@
 package everypin.app.core.utils
 
 import android.content.Context
+import logcat.asLog
+import logcat.logcat
 import java.io.File
 
 object FileUtil {
@@ -19,7 +21,7 @@ object FileUtil {
             val tempDir = File(context.cacheDir, TEMP)
             tempDir.deleteRecursively()
         } catch (e: Exception) {
-            Logger.e(e.message.toString())
+            logcat { e.asLog() }
             false
         }
     }

@@ -38,12 +38,14 @@ import everypin.app.core.ui.component.button.GoogleSignInButton
 import everypin.app.core.ui.component.button.KakaoSignInButton
 import everypin.app.core.ui.theme.EveryPinTheme
 import everypin.app.core.ui.theme.LoadingBackgroundColor
-import everypin.app.core.utils.Logger
 import everypin.app.feature.login.state.LoginEvent
 import everypin.app.feature.login.viewmodel.LoginViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 
 @Composable
 internal fun LoginRoute(
@@ -85,7 +87,7 @@ internal fun LoginRoute(
                 }
 
                 is LoginEvent.LoginFailed -> {
-                    Logger.e(event.message, event.t)
+                    logcat(LogPriority.ERROR) { event.t.asLog() }
                     showLoading = false
                     signInErrorMsg = event.message
                     showSignInErrorDialog = true
@@ -104,7 +106,7 @@ internal fun LoginRoute(
         onClickSignIn = { providerType ->
             scope.launch {
                 socialSignInHelper.signIn(providerType).catch { error ->
-                    Logger.e("소셜로그인 실패", error)
+                    logcat(LogPriority.ERROR) { error.asLog() }
                     signInErrorMsg = ContextCompat.getString(context, R.string.sign_in_error)
                     showSignInErrorDialog = true
                 }.collectLatest { token ->

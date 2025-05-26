@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
-import everypin.app.core.utils.Logger
 import everypin.app.data.model.PlaceInfo
 import everypin.app.data.repository.KakaoRepository
 import kotlinx.coroutines.FlowPreview
@@ -18,6 +17,8 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import logcat.asLog
+import logcat.logcat
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,7 +46,7 @@ class SearchPlaceViewModel @Inject constructor(
 
         viewModelScope.launch {
             kakaoRepository.searchKeywordResultPagingData(value).cachedIn(viewModelScope).catch {
-                Logger.e("주소 검색 실패", it)
+                logcat { it.asLog() }
             }.collectLatest {
                 _placeInfoPagingDataState.emit(it)
             }
